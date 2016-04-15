@@ -1,0 +1,6 @@
+Debug/
+*/Debug/
+.vs/
+*.opendb
+*.sdf
+*.user
