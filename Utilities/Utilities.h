@@ -49,6 +49,31 @@ namespace Utilities
     static std::vector<std::string> split(const std::string& src);
     static void Title(const std::string& src, char underline = '=');
     static void title(const std::string& src);
+
+	// Split a string based on a specified character
+	static std::vector<std::string> split(const std::string &s, char delim, std::vector<std::string> &elems);
+
+	// Split a string based on a specified character
+	static std::vector<std::string> split(const std::string &s, char delim);
+
+	// Trim left part of a string
+	static std::string trimL(const std::string &s);
+
+	// Trim right part of a string
+	static std::string trimR(const std::string &s);
+
+	// Trim left and right part of a string
+	static std::string trim(const std::string &s);
+
+	// Replace some content in a string with other content
+	static std::string replace(const std::string& str, const std::string& from, const std::string& to);
+
+	// Change a string into escaped string
+	static std::string escape(const std::string& str);
+
+	// Change a escaped string back to un escaped style
+	static std::string un_escape(const std::string& str);
+
   };
 
   void putline();

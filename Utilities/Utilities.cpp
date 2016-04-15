@@ -55,6 +55,80 @@ std::vector<std::string> StringHelper::split(const std::string& src)
   return accum;
 }
 
+std::string StringHelper::trimL(const std::string &s) {
+	if (!s.empty()) {
+		int first = s.find_first_not_of("\n ");
+		if (first >= 0) {
+			return s.substr(first);
+		}
+	}
+	return s;
+}
+
+std::string StringHelper::trimR(const std::string &s) {
+	if (!s.empty()) {
+		int last = s.find_last_not_of("\n ");
+		if (last >= 0) {
+			return s.substr(last);
+		}
+	}
+	return s;
+}
+
+std::string StringHelper::trim(std::string const& str)
+{
+	if (str.empty())
+		return str;
+
+	std::size_t firstScan = str.find_first_not_of(' ');
+	std::size_t first = firstScan == std::string::npos ? str.length() : firstScan;
+	std::size_t last = str.find_last_not_of(' ');
+	return str.substr(first, last - first + 1);
+}
+
+
+
+std::vector<std::string> StringHelper::split(const std::string &s, char delim, std::vector<std::string> &elems) {
+	std::stringstream ss(s);
+	std::string item;
+	while (std::getline(ss, item, delim)) {
+		elems.push_back(item);
+	}
+	return elems;
+}
+
+std::vector<std::string> StringHelper::split(const std::string &s, char delim) {
+	std::vector<std::string> elems;
+	split(s, delim, elems);
+	return elems;
+}
+
+std::string StringHelper::replace(const std::string& str, const std::string& from, const std::string& to) {
+	auto copy = std::string(str);
+	size_t start_pos = copy.find(from);
+	if (start_pos != std::string::npos)
+		copy.replace(start_pos, from.length(), to);
+	return copy;
+}
+
+std::string StringHelper::escape(const std::string& str) {
+	auto copy = std::string(str);
+	copy = StringHelper::replace(copy, "\\n", "\n");
+	copy = StringHelper::replace(copy, "\\t", "\t");
+	copy = StringHelper::replace(copy, "\\\\", "\\");
+	return copy;
+}
+
+std::string StringHelper::un_escape(const std::string& str) {
+	auto copy = std::string(str);
+
+	copy = StringHelper::replace(copy, "\\", "\\\\");
+	copy = StringHelper::replace(copy, "\n", "\\n");
+	copy = StringHelper::replace(copy, "\t", "\n");
+
+	return copy;
+}
+
 void Utilities::putline()
 {
   std::cout << "\n";
