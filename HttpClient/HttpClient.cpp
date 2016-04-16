@@ -5,7 +5,7 @@
 *	Author: Junkai Yang
 */
 #include "HttpClient.h"
-
+#include "../HttpBase/HttpUtils.h"
 HttpClient::~HttpClient()
 {
 	//this->connector.shutDown();
@@ -17,13 +17,16 @@ void HttpClient::setConnection(std::string address, int port)
 	this->port = port;
 }
 
-HttpResponse HttpClient::sendRequest(std::string filePath)
+HttpResponse HttpClient::sendRequest(std::vector<std::string> filePaths)
 {
-	std::string filename = FileSystem::Path::getName(filePath);
 	this->connector.connect(address, port);
 	HttpRequest request;
 	request.Type = "PUT";
-	request.Resource = filename;
-	request.ContentType = "file";
+	request.ContentType = "files";
+	request.files = filePaths;
+	request.boundry = "--------------------------JukaiYangCIS687";
+	auto s = HttpUtils::serialize(request);
+	this->connector.sendString(s);
+	this->connector.recvString('\n');
 	return HttpResponse();
 }

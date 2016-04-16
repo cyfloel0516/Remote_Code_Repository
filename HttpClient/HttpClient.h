@@ -13,7 +13,7 @@ public:
 	void setConnection(std::string address, int port);
 	
 	// Send file through HTTP
-	HttpResponse sendRequest(std::string filePath);
+	HttpResponse sendRequest(std::vector<std::string> filePaths);
 
 private:
 	SocketConnecter connector;
