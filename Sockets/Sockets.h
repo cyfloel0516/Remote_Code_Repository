@@ -173,6 +173,7 @@ public:
   size_t recvStream(size_t bytes, byte* buffer);
   bool sendString(const std::string& str, byte terminator='\0');
   std::string recvString(byte terminator='\0');
+  std::string recvString(std::string terminator = "\0");
   size_t bytesWaiting();
   bool waitForData(size_t timeToWait, size_t timeToCheck);
   bool shutDownSend();

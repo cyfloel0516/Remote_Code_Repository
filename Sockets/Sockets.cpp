@@ -231,6 +231,25 @@ std::string Socket::recvString(byte terminator)
   }
   return str;
 }
+
+std::string Socket::recvString(std::string terminator)
+{
+	static const int buflen = 1;
+	int terminatorSize = terminator.size();
+	char buffer[1];
+	std::string str;
+	while (true)
+	{
+		iResult = ::recv(socket_, buffer, buflen, 0);
+		if (iResult == 0 || iResult == INVALID_SOCKET)
+			break;
+		if (str.size() >= terminatorSize && str.substr(str.size() - terminatorSize) == terminator)
+			break;
+		str += buffer[0];
+	}
+	return str;
+}
+
 //----< attempt to send specified number of bytes, but may not send all >----
 /*
  * returns number of bytes actually sent
