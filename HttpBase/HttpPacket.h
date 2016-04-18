@@ -18,10 +18,15 @@ struct HttpPacket{
 	int ContentLength;
 };
 
+struct HttpRequestLine {
+	std::string Name;
+	std::string Value;
+	std::map<std::string, std::string> Proterties;
+};
 
 struct HttpResponse : HttpPacket {  };
 
 struct HttpRequest : HttpPacket {  
-	std::string boundry;
+	std::string boundary;
 	std::vector<std::string> files;
 };

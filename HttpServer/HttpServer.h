@@ -18,6 +18,7 @@ public:
 	// Called by Socket, handle the socket connection
 	void operator()(Socket& socket_);
 
+	
 private:
 	// Handle Content Type, set the content-type value in request object
 	void handleContentType(std::string line);
@@ -25,6 +26,11 @@ private:
 	// Handle Content Length, set the content-length value in request object
 	void handleContentLength(std::string line);
 
+	// Handle the header of request
+	void handleHeader(std::string line);
+
+	// Handle the files
+	void handleContentFiles();
 	// Request object for this socket connection
 	HttpRequest request;
 };

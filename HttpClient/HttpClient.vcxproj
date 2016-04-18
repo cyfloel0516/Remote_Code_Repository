@@ -151,6 +151,20 @@
   <ItemGroup>
     <ClCompile Include="HttpClient.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FileSystem_Windows\FileSystem_Windows.vcxproj">
+      <Project>{55a50fba-d8c5-44e1-ae31-eeb570ac3b77}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\HttpBase\HttpBase.vcxproj">
+      <Project>{dff0023d-01fb-4848-8554-7cda428c8ce8}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Sockets\Sockets.vcxproj">
+      <Project>{ca3129b8-1bf4-44c9-b116-53ec72d0bccb}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Utilities\Utilities.vcxproj">
+      <Project>{462b43b2-8b13-4178-bf2a-903f76f1985c}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

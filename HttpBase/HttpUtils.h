@@ -8,6 +8,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include "HttpPacket.h"
 
 class HttpUtils {
@@ -22,6 +23,9 @@ public:
 	static std::string serialize(HttpRequest request);
 
 	static std::vector<char> getFileContent(std::string fileInfo);
+
+	// Get command values after command definition
+	static HttpRequestLine getLineData(std::string line);
 
 	static void putStringToVector(std::vector<char>& destination, std::string value);
 };

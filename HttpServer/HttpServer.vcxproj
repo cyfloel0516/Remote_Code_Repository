@@ -140,6 +140,9 @@
     <ClCompile Include="HttpServer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\HttpBase\HttpBase.vcxproj">
+      <Project>{dff0023d-01fb-4848-8554-7cda428c8ce8}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Logger\Logger.vcxproj">
       <Project>{66d2c764-9da8-4505-b869-8e84e8968f7c}</Project>
     </ProjectReference>

@@ -48,14 +48,14 @@ std::string HttpUtils::serialize(HttpRequest request) {
 	
 	std::string tempResult = request.Type + " " + request.Resource + " " + request.Protocol + "\n";
 
-	tempResult += "Content-Type: " + request.ContentType + "; boundry=" + request.boundry + "\n"
+	tempResult += "Content-Type: " + request.ContentType + "; boundary=" + request.boundary + "\n"
 		+ "Content-Length: 0" + "\n";
 
 	for (i = 0; i < tempResult.size(); i++) result.push_back(tempResult[i]);
 
 	// Serialize file content
 	if (isFile) {
-		result += "\n" + request.boundry + "\n";
+		result += "\n" + request.boundary + "\n";
 		for (i = 0; i < request.files.size(); i++) {
 			auto filename = FileSystem::Path::getName(request.files[i]);
 			auto contentHeader = "Content-Disposition: form-data; filename=\"" + filename + "\"\n\n";
@@ -63,11 +63,31 @@ std::string HttpUtils::serialize(HttpRequest request) {
 			auto fileContent = HttpUtils::getFileContent(request.files[i]);
 			for (j = 0; j < fileContent.size(); j++) result.push_back(fileContent[j]);
 			result.push_back('\n');
-			result += request.boundry + "\n";
+			result += request.boundary + "\n";
 		}
 	}
 
 	return result;
+}
+
+HttpRequestLine HttpUtils::getLineData(std::string line) {
+	HttpRequestLine lineData;
+	std::map<std::string, std::string> result;
+	if (line.find(";") != std::string::npos) {
+		auto keyValues = Utilities::StringHelper::split(line, ';');
+		lineData.Name = HttpUtils::getCommand(keyValues[0]);
+		lineData.Value = HttpUtils::getValue(keyValues[0]);
+		for (auto i = 1; i < keyValues.size(); i++) {
+			auto keyValue = keyValues[i];
+			auto pair = Utilities::StringHelper::split(keyValue, '=');
+			lineData.Proterties.insert(pair[0], pair[1]);
+		}
+	}
+	else {
+		lineData.Name = HttpUtils::getCommand(line);
+		lineData.Value = HttpUtils::getValue(line);
+	}
+	return lineData;
 }
 
 std::vector<char> HttpUtils::getFileContent(std::string filename) {
@@ -98,7 +118,7 @@ void HttpUtils::putStringToVector(std::vector<char>& destination, std::string va
 #ifdef TEST_HTTPUTILS
 int main() {
 	HttpRequest request;
-	request.boundry = "---------------12345";
+	request.boundary = "---------------12345";
 	request.files.push_back(FileSystem::Path::getFullFileSpec("./HttpUtils.cpp"));
 	request.Type = "POST";
 	request.Resource = "test_resource";
