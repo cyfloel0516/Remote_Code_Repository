@@ -8,9 +8,12 @@
 */
 #include <string>
 #include <iostream>
+#include <functional>
+
 #include "../Sockets/Sockets.h"
 #include "../HttpBase/HttpPacket.h"
 // Http Request Object, contains some necessary value for a request
+using namespace std;
 
 class HttpRequestHandler
 {
@@ -18,6 +21,8 @@ public:
 	// Called by Socket, handle the socket connection
 	void operator()(Socket& socket_);
 
+	// Add route rule to route table
+	void addRoute(std::string url, std::function<HttpResponse> handler);
 	
 private:
 	// Handle Content Type, set the content-type value in request object
@@ -31,6 +36,13 @@ private:
 
 	// Handle the files
 	void handleContentFiles(Socket& socket_);
+
 	// Request object for this socket connection
 	HttpRequest request;
+
+	// Read content from socket and make a coresponding HttpRequest object
+	void setHttpRequest(Socket& socket);
+
+	// Store the route information
+	std::map<std::string, std::function<HttpResponse(HttpRequest)>> routeTable;
 };

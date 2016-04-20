@@ -35,8 +35,8 @@ std::string HttpUtils::serialize(HttpRequest request) {
 	int requestSize = 1000, i = 0, j = 0;
 	bool isFile = false;
 	if (request.files.size() != 0) {
-		for (i = 0; i < request.files.size(); i++) {
-			FileSystem::FileInfo fi(request.files[i]);
+		for (auto it = request.files.begin(); it != request.files.end(); it++) {
+			FileSystem::FileInfo fi(it->first);
 			requestSize += fi.size();
 		}
 		result.reserve(requestSize);
@@ -56,11 +56,11 @@ std::string HttpUtils::serialize(HttpRequest request) {
 	// Serialize file content
 	if (isFile) {
 		result += "\n" + request.boundary + "\n";
-		for (i = 0; i < request.files.size(); i++) {
-			auto filename = FileSystem::Path::getName(request.files[i]);
+		for (auto it = request.files.begin(); it != request.files.end(); it++) {
+			auto filename = FileSystem::Path::getName(it->first);
 			auto contentHeader = "Content-Disposition: form-data; filename=" + filename + "\n\n";
 			result += contentHeader;
-			auto fileContent = HttpUtils::getFileContent(request.files[i]);
+			auto fileContent = HttpUtils::getFileContent(it->first);
 			for (j = 0; j < fileContent.size(); j++) result.push_back(fileContent[j]);
 			result.push_back('\n');
 			result += request.boundary + "\n";

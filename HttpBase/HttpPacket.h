@@ -29,5 +29,5 @@ struct HttpResponse : HttpPacket {  };
 
 struct HttpRequest : HttpPacket {  
 	std::string boundary;
-	std::vector<std::string> files;
+	std::map<std::string, std::ostream*> files;
 };
