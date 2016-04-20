@@ -30,7 +30,7 @@ private:
 	void handleHeader(std::string line);
 
 	// Handle the files
-	void handleContentFiles();
+	void handleContentFiles(Socket& socket_);
 	// Request object for this socket connection
 	HttpRequest request;
 };

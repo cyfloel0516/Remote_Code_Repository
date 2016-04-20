@@ -247,7 +247,7 @@ std::string Socket::recvString(std::string terminator)
 			break;
 		str += buffer[0];
 	}
-	return str;
+	return str.substr(0, str.size() - terminator.size() - 1);
 }
 
 //----< attempt to send specified number of bytes, but may not send all >----

@@ -28,7 +28,7 @@ HttpResponse HttpClient::sendRequest(std::vector<std::string> filePaths)
 	request.Type = "PUT";
 	request.ContentType = "files";
 	request.files = filePaths;
-	request.boundary = "--------------------------JukaiYangCIS687";
+	request.boundary = "--------------------------JukaiYangCIS687" + std::to_string(rand() % 1000);
 	auto s = HttpUtils::serialize(request);
 	this->connector.sendString(s);
 	this->connector.shutDownSend();

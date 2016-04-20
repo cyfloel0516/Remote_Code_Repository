@@ -24,7 +24,7 @@ std::string HttpUtils::getValue(std::string line) {
 	int pos = line.find(':');
 	std::string value;
 	if (pos != std::string::npos) {
-		value = Utilities::StringHelper::trim(line.substr(pos));
+		value = Utilities::StringHelper::trim(line.substr(pos + 1));
 	}
 	return value;
 }
@@ -58,7 +58,7 @@ std::string HttpUtils::serialize(HttpRequest request) {
 		result += "\n" + request.boundary + "\n";
 		for (i = 0; i < request.files.size(); i++) {
 			auto filename = FileSystem::Path::getName(request.files[i]);
-			auto contentHeader = "Content-Disposition: form-data; filename=\"" + filename + "\"\n\n";
+			auto contentHeader = "Content-Disposition: form-data; filename=" + filename + "\n\n";
 			result += contentHeader;
 			auto fileContent = HttpUtils::getFileContent(request.files[i]);
 			for (j = 0; j < fileContent.size(); j++) result.push_back(fileContent[j]);
@@ -80,7 +80,7 @@ HttpRequestLine HttpUtils::getLineData(std::string line) {
 		for (auto i = 1; i < keyValues.size(); i++) {
 			auto keyValue = keyValues[i];
 			auto pair = Utilities::StringHelper::split(keyValue, '=');
-			lineData.Proterties.insert(pair[0], pair[1]);
+			lineData.Proterties.insert({ Utilities::StringHelper::trim(pair[0]), Utilities::StringHelper::trim(pair[1]) });
 		}
 	}
 	else {
