@@ -40,19 +40,19 @@ HttpResponse HttpClient::sendRequest(std::vector<std::string> filePaths)
 }
 
 
-
-int main()
-{
-
-	try
-	{
-		std::vector<std::string> files{ "./HttpClient.cpp", "./HttpClient.h" };
-		HttpClient client;
-		client.setConnection("localhost", 9080);
-		client.sendRequest(files);
-	}
-	catch (std::exception& ex)
-	{
-		std::cout << ex.what();
-	}
-}
+//
+//int main()
+//{
+//
+//	try
+//	{
+//		std::vector<std::string> files{ "./HttpClient.cpp", "./HttpClient.h" };
+//		HttpClient client;
+//		client.setConnection("localhost", 9080);
+//		client.sendRequest(files);
+//	}
+//	catch (std::exception& ex)
+//	{
+//		std::cout << ex.what();
+//	}
+//}

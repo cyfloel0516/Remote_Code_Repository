@@ -9,6 +9,7 @@
 #include "../HttpBase/HttpUtils.h"
 #include "../HttpBase/HttpPacket.h"
 #include "../FileSystem_Windows/FileSystem.h"
+
 void HttpRequestHandler::operator()(Socket& socket_) {
 	// Process header
 	auto line = socket_.recvString('\n');
@@ -40,8 +41,10 @@ void HttpRequestHandler::handleContentLength(std::string line) {
 
 void HttpRequestHandler::handleHeader(std::string line){
 	std::vector<std::string> headers = Utilities::StringHelper::split(line, ' ');
-	this->request.Type = headers[0];
-	this->request.Resource = headers[1];
+	if (headers.size() > 2) {
+		this->request.Type = headers[0];
+		this->request.Resource = headers[1];
+	}
 }
 
 void HttpRequestHandler::handleContentFiles(Socket& socket_){

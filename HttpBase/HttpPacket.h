@@ -16,6 +16,7 @@ struct HttpPacket{
 	std::string Protocol;
 	std::string StatusText;
 	std::string ContentType;
+	std::string contentString;
 	int ContentLength;
 };
 
@@ -25,7 +26,7 @@ struct HttpRequestLine {
 	std::map<std::string, std::string> Proterties;
 };
 
-struct HttpResponse : HttpPacket {  };
+struct HttpResponse : HttpPacket {};
 
 struct HttpRequest : HttpPacket {  
 	std::string boundary;
