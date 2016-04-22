@@ -12,6 +12,10 @@
 #include <iostream>
 #include <vector>
 #include <functional>
+#include "../FileSystem_Windows/FileSystemSearchHelper.h"
+#include "RepositoryMetadata.h"
+
+
 using namespace std;
 
 const string RepositoryHttpServer::repository_path = FileSystem::Path::getFullFileSpec("../Code_Repository/");
@@ -22,12 +26,24 @@ void RepositoryHttpServer::CheckRepositoryExist(){
 		FileSystem::Directory::create(RepositoryHttpServer::repository_path);
 }
 
+std::string RepositoryHttpServer::GetCurrentOpenedModule(string moduleName)
+{
+	auto moduleFolders = FileSystemSearchHelper::searchDirectories(RepositoryHttpServer::repository_path, moduleName + "_*");
+	for (auto folderPath : moduleFolders) {
+		auto metaDataFile = folderPath + "/" + "metadata.json";
+	}
+	return std::string();
+}
+
 HttpResponse RepositoryHttpServer::FilesCheckIn(HttpRequest request)
 {
 	RepositoryHttpServer::CheckRepositoryExist();
 	vector<string> fileList;
-	string folderPath = RepositoryHttpServer::repository_path + request.FormData["ModuleName"] + "_" + RepositoryHttpServer::CurrentDatetimeString() + "/";
+	bool closed = request.FormData["Closed"] == "True";
+	string folderPath = RepositoryHttpServer::repository_path + request.FormData["ModuleName"] + "__" + RepositoryHttpServer::CurrentDatetimeString() + "/";
+	
 	FileSystem::Directory::create(folderPath);
+	// Store files to module folder.
 	for (auto it = request.files.begin(); it != request.files.end(); it++) {
 		auto fileName = it->first;
 		auto fileStream = it->second;
@@ -39,6 +55,7 @@ HttpResponse RepositoryHttpServer::FilesCheckIn(HttpRequest request)
 		file.putBuffer(fileContent.size(), &fileContent[0]);
 		file.close();
 	}
+	
 	return HttpResponse();
 }
 
@@ -53,10 +70,22 @@ string RepositoryHttpServer::CurrentDatetimeString()
 }
 
 
-//----< test stub starts here >----------------------------------------------
 
+//----< test stub starts here >----------------------------------------------
 int main()
 {
+	// Test Repository Metadata:
+	
+	RepositoryMetadata metadata;
+	metadata.Name = "TestModule";
+	metadata.Version = "1.0.0";
+	metadata.Closed = false;
+	metadata.Dependencies = vector<string>{ "Module1", "Module2" };
+	metadata.FileList = vector<string>{ "File1", "File2", "File3" };
+	auto jsonString = RepositoryMetadataHelper::Serialize(metadata);
+
+	auto metadata2 = RepositoryMetadataHelper::Deserialize(jsonString);
+	
 	try
 	{
 		SocketSystem ss;
@@ -71,6 +100,8 @@ int main()
 
 		std::cout.flush();
 		std::cin.get();
+
+		
 	}
 	catch (std::exception& ex)
 	{

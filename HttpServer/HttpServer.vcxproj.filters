@@ -24,12 +24,24 @@
     <ClInclude Include="RepositoryHttpServer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="RepositoryDependencyAnalyser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RepositoryMetadata.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HttpServer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RepositoryHttpServer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RepositoryMetadata.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RepositoryDependencyAnalyser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

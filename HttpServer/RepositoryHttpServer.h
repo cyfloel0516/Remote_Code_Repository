@@ -13,12 +13,18 @@
 #include "../FileSystem_Windows/FileSystem.h"
 
 #include <string>
+
 using namespace std;
 
+
+// This class includes the function to handle HTTP request from client
 class RepositoryHttpServer {
 public:
 	// Check if the repository is exist, if not, then create it.
 	void CheckRepositoryExist();
+
+	// Get current opend module folder, if no opend folder exist then create a new version and return it.
+	std::string GetCurrentOpenedModule(string moduleName);
 
 	// Module or package check-in function
 	HttpResponse FilesCheckIn(HttpRequest request);

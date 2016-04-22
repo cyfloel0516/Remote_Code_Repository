@@ -15,38 +15,28 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ClassLibrary1.h">
+    <ClInclude Include="ActionsAndRules.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Stdafx.h">
+    <ClInclude Include="Parser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
+    <ClInclude Include="ConfigureParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TestFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ClassLibrary1.cpp">
+    <ClCompile Include="ActionsAndRules.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AssemblyInfo.cpp">
+    <ClCompile Include="ConfigureParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Stdafx.cpp">
+    <ClCompile Include="Parser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="app.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="app.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
   </ItemGroup>
 </Project>

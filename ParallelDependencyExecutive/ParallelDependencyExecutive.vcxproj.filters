@@ -15,24 +15,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Logger.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Cpp11-BlockingQueue.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Utilities\Utilities.h">
+    <ClInclude Include="ParallelExecutive.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Logger.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Cpp11-BlockingQueue.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Utilities\Utilities.cpp">
+    <ClCompile Include="ParallelExecutive.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

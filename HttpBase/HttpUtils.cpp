@@ -76,6 +76,18 @@ std::string HttpUtils::serialize(HttpRequest request) {
 	return result;
 }
 
+std::string HttpUtils::serialize(HttpResponse response)
+{
+	std::string result;
+	
+	result = response.Protocol + " "+ std::to_string(response.StatusCode) + " " + response.StatusText +  "\n";
+	result += "Content-Type: " + response.ContentType;
+	result += "Content-Length: " + std::to_string(response.contentString.size()) + "\n";
+	result += "\n" + response.contentString;
+
+	return result;
+}
+
 HttpRequestLine HttpUtils::getLineData(std::string line) {
 	HttpRequestLine lineData;
 	std::map<std::string, std::string> result;

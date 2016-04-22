@@ -22,6 +22,9 @@ public:
 	// Serialize the request object to char array for transfer via HTTP connect
 	static std::string serialize(HttpRequest request);
 
+	// Serialize the response object to char array for transfer via HTTP connect
+	static std::string serialize(HttpResponse request);
+
 	// Get file contents for transfer
 	static std::vector<char> getFileContent(std::string fileInfo);
 
