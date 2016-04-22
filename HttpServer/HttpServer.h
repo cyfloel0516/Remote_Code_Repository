@@ -22,7 +22,7 @@ public:
 	void operator()(Socket& socket_);
 
 	// Add route rule to route table
-	void addRoute(std::string url, std::function<HttpResponse> handler);
+	void addRoute(std::string url, std::function<HttpResponse(HttpRequest)> handler);
 	
 private:
 	// Handle Content Type, set the content-type value in request object

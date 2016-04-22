@@ -30,7 +30,6 @@ std::string HttpUtils::getValue(std::string line) {
 }
 
 std::string HttpUtils::serialize(HttpRequest request) {
-	
 	std::string result;
 	int requestSize = 1000, i = 0, j = 0;
 	bool isFile = false;
@@ -52,6 +51,13 @@ std::string HttpUtils::serialize(HttpRequest request) {
 		+ "Content-Length: 0" + "\n";
 
 	for (i = 0; i < tempResult.size(); i++) result.push_back(tempResult[i]);
+	
+	// Serialize form data
+	for (auto it = request.FormData.begin(); it != request.FormData.end(); it++) {
+		result += "\n" + request.boundary + "\n";
+		result += "Content-Disposition: form-data; name=" + it->first + "\n\n";
+		result += it->second + "\n" + request.boundary + "\n";
+	}
 
 	// Serialize file content
 	if (isFile) {

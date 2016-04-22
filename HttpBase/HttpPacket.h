@@ -17,6 +17,7 @@ struct HttpPacket{
 	std::string StatusText;
 	std::string ContentType;
 	std::string contentString;
+	std::map <std::string, std::string> FormData;
 	int ContentLength;
 };
 
@@ -30,5 +31,5 @@ struct HttpResponse : HttpPacket {};
 
 struct HttpRequest : HttpPacket {  
 	std::string boundary;
-	std::map<std::string, std::ostream*> files;
+	std::map<std::string, std::ostringstream*> files;
 };

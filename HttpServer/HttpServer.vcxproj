@@ -135,9 +135,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HttpServer.h" />
+    <ClInclude Include="RepositoryHttpServer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HttpServer.cpp" />
+    <ClCompile Include="RepositoryHttpServer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HttpBase\HttpBase.vcxproj">

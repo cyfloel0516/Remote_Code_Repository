@@ -33,6 +33,11 @@ void HttpRequestHandler::operator()(Socket& socket_) {
 		// Route existed
 		auto response = route->second(this->request);
 	}
+	//socket_.sendString();
+}
+
+void HttpRequestHandler::addRoute(std::string url, std::function<HttpResponse(HttpRequest)> handler){
+	this->routeTable.insert({ url, handler });
 }
 
 void HttpRequestHandler::handleContentLength(std::string line) {
@@ -41,35 +46,47 @@ void HttpRequestHandler::handleContentLength(std::string line) {
 
 void HttpRequestHandler::handleHeader(std::string line){
 	std::vector<std::string> headers = Utilities::StringHelper::split(line, ' ');
-	if (headers.size() > 2) {
+	if (headers.size() >= 2) {
 		this->request.Type = headers[0];
 		this->request.Resource = headers[1];
 	}
 }
 
 void HttpRequestHandler::handleContentFiles(Socket& socket_){
-	std::string filename;
+	std::string filename, formDataName;
 	bool inFile = false;
+	bool inFormData = false;
 	HttpRequestLine lineData;
 	while (socket_.bytesWaiting() > 0) {
 		auto tempLineData = HttpUtils::getLineData(socket_.recvString('\n'));
 		if (tempLineData.Name == "Content-Disposition") {
 			// Process filename
-			filename = tempLineData.Proterties["filename"];
+			auto isFile = (tempLineData.Proterties.find("filename") != tempLineData.Proterties.end());
+			if (isFile){
+				inFile = true;
+				filename = tempLineData.Proterties["filename"];
+			}
+			else{
+				inFormData = !isFile;
+				formDataName = tempLineData.Proterties["name"];
+			}
 			lineData = tempLineData;
-			inFile = true;
 		}
 		else if (inFile && tempLineData.Name.empty()) {
 			//std::string filePath = "../repository/" + filename;
 			//FileSystem::File file(filePath);
 			//file.open(FileSystem::File::out, FileSystem::File::binary);
 			std::string fileContent = socket_.recvString(this->request.boundary);
-			std::ostringstream s;
-			s.str(fileContent);
-			request.files.insert({ filename, &s });
+			std::ostringstream* s = new std::ostringstream(fileContent);
+			request.files.insert({ filename, s });
 			//file.putBuffer(fileContent.size(), &fileContent[0]);
 			//file.close();
 			inFile = false;
+		}
+		else if (inFormData && tempLineData.Name.empty()) {
+			std::string formContent = socket_.recvString(this->request.boundary);
+			this->request.FormData.insert({ formDataName, formContent });
+			inFormData = false;
 		}
 	}
 }
@@ -115,24 +132,4 @@ void HttpRequestHandler::handleContentType(std::string line) {
 	}
 }
 
-
-//----< test stub starts here >----------------------------------------------
-
-int main()
-{
-	try
-	{
-		SocketSystem ss;
-		SocketListener sl(9080, Socket::IP4);
-		HttpRequestHandler cp;
-		sl.start(cp);
-
-		std::cout.flush();
-		std::cin.get();
-	}
-	catch (std::exception& ex)
-	{
-
-	}
-}
 

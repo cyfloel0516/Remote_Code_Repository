@@ -22,10 +22,12 @@ public:
 	// Serialize the request object to char array for transfer via HTTP connect
 	static std::string serialize(HttpRequest request);
 
+	// Get file contents for transfer
 	static std::vector<char> getFileContent(std::string fileInfo);
 
 	// Get command values after command definition
 	static HttpRequestLine getLineData(std::string line);
 
+	// Put string into a char vector
 	static void putStringToVector(std::vector<char>& destination, std::string value);
 };
