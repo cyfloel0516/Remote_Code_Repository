@@ -29,8 +29,13 @@ public:
 	// Module or package check-in function
 	HttpResponse FilesCheckIn(HttpRequest request);
 
+	// Regenerate the dependency relation
+	static void GenerateDependencyRelation();
+		
 	// A helper function to get current datetime string, the format is YYYYMMDD_HHMMSS
 	static string CurrentDatetimeString();
+
+
 private:
 	const static string repository_path;
 };

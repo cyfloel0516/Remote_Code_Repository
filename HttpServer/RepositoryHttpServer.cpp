@@ -12,8 +12,10 @@
 #include <iostream>
 #include <vector>
 #include <functional>
+#include <algorithm>
 #include "../FileSystem_Windows/FileSystemSearchHelper.h"
 #include "RepositoryMetadata.h"
+#include "RepositoryDependencyAnalyser.h"
 
 
 using namespace std;
@@ -40,7 +42,9 @@ HttpResponse RepositoryHttpServer::FilesCheckIn(HttpRequest request)
 	RepositoryHttpServer::CheckRepositoryExist();
 	vector<string> fileList;
 	bool closed = request.FormData["Closed"] == "True";
-	string folderPath = RepositoryHttpServer::repository_path + request.FormData["ModuleName"] + "__" + RepositoryHttpServer::CurrentDatetimeString() + "/";
+	auto checkInVersion = RepositoryHttpServer::CurrentDatetimeString();
+	auto moduleName = request.FormData["ModuleName"] + "__" + checkInVersion;
+	string folderPath = RepositoryHttpServer::repository_path + moduleName + "/";
 	
 	FileSystem::Directory::create(folderPath);
 	// Store files to module folder.
@@ -55,8 +59,38 @@ HttpResponse RepositoryHttpServer::FilesCheckIn(HttpRequest request)
 		file.putBuffer(fileContent.size(), &fileContent[0]);
 		file.close();
 	}
+	// Save metadata to the folder
+	RepositoryMetadata metadata(request.FormData["ModuleName"], checkInVersion, closed);
+	RepositoryMetadataHelper::SaveMetadata(folderPath, metadata);
+	
+	// Regenerate dependency relation
 	
 	return HttpResponse();
+}
+
+void RepositoryHttpServer::GenerateDependencyRelation(){
+	RepositoryDependencyAnalyser analyser;
+	analyser.InitTypeTable();
+	// go through each folder and see if the repository is closed, if yes, then take all files into the list for analysis
+	auto directories = FileSystem::Directory::getDirectories(RepositoryMetadataHelper::repository_path, "*");
+	for (auto dir : directories) {
+		auto metadata = RepositoryMetadataHelper::GetMetadata(dir);
+		if (metadata.Closed) {
+			// Do dependency analysis
+			auto dependencies = analyser.GetDependency(dir);
+			for (auto dep : dependencies) {
+				auto it = std::find_if(metadata.Dependencies.begin(), metadata.Dependencies.end(), [&dep](const string&v) {
+					return RepositoryMetadata::VersionCompared(v, dep);
+				});
+				if (it == metadata.Dependencies.end())
+					metadata.Dependencies.push_back(dep);
+				else
+					*it = dep;
+			}
+		}
+		RepositoryMetadataHelper::SaveMetadata(metadata);
+	}
+	
 }
 
 string RepositoryHttpServer::CurrentDatetimeString()
@@ -68,7 +102,6 @@ string RepositoryHttpServer::CurrentDatetimeString()
 	auto timeString = strftime(buffer, 15, "%Y%m%d%H%M%S", &now);
 	return std::string(buffer, 14);
 }
-
 
 
 //----< test stub starts here >----------------------------------------------

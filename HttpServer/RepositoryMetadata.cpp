@@ -83,3 +83,26 @@ RepositoryMetadata RepositoryMetadataHelper::GetMetadata(string modulePath)
 	std::string metadataString = metadataFile.readAll();
 	return RepositoryMetadataHelper::Deserialize(metadataString);
 }
+
+RepositoryMetadata::RepositoryMetadata(){}
+
+RepositoryMetadata::RepositoryMetadata(string name, string version, bool closed){
+	this->Name = name;
+	this->Version = version;
+	this->Closed = closed;
+}
+
+std::string RepositoryMetadata::getFullName()
+{
+	return this->Name + "__" + this->Version;
+}
+
+bool RepositoryMetadata::VersionCompared(string version1, string version2)
+{
+	auto index1 = version1.find_last_of("__");
+	auto index2 = version2.find_last_of("__");
+	if (index1 == index2 && version1.substr(0, index1) == version2.substr(0, index2))
+		return true;
+	else
+		return false;
+}
