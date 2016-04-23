@@ -16,7 +16,8 @@ public:
 	
 	// Send file through HTTP
 	HttpResponse sendRequest(string resource, map<string, string> formData, vector<string> filePaths);
-
+	
+	HttpResponse deserializeResponse(string responseString);
 private:
 	SocketConnecter connector;
 	std::string address;

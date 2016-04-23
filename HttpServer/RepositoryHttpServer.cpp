@@ -78,7 +78,13 @@ HttpResponse RepositoryHttpServer::FilesCheckIn(HttpRequest request)
 	if (metadata.Closed) {
 		RepositoryHttpServer::GenerateDependencyRelation();
 	}
-	return HttpResponse();
+	auto res = HttpResponse();
+	res.contentString = "success";
+	res.StatusCode = 200;
+	res.StatusText = "OK";
+	res.Protocol = "HTTP_681";
+	res.ContentType = "text/plain";
+	return res;
 }
 
 std::string RepositoryHttpServer::GetVersionFromPath(std::string path)

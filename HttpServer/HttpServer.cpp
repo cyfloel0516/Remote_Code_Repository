@@ -30,11 +30,12 @@ void HttpRequestHandler::operator()(Socket& socket_) {
 	}
 	// Look up for the route table and let the handler to handle specified request
 	auto route = this->routeTable.find(this->request.Resource);
+	HttpResponse response;
 	if (route != this->routeTable.end()) {
 		// Route existed
-		auto response = route->second(this->request);
+		response = route->second(this->request);
 	}
-	//socket_.sendString();
+	socket_.sendString(HttpUtils::serialize(response));
 }
 
 void HttpRequestHandler::addRoute(std::string url, std::function<HttpResponse(HttpRequest)> handler){

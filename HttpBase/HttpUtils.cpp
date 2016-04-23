@@ -81,7 +81,7 @@ std::string HttpUtils::serialize(HttpResponse response)
 	std::string result;
 	
 	result = response.Protocol + " "+ std::to_string(response.StatusCode) + " " + response.StatusText +  "\n";
-	result += "Content-Type: " + response.ContentType;
+	result += "Content-Type: " + response.ContentType + "\n";
 	result += "Content-Length: " + std::to_string(response.contentString.size()) + "\n";
 	result += "\n" + response.contentString;
 

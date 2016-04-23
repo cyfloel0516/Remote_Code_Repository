@@ -20,9 +20,7 @@ void HttpClient::setConnection(std::string address, int port)
 HttpResponse HttpClient::sendRequest(string resource, map<string, string> formData, vector<string> filePaths)
 {
 	SocketSystem ss;
-	while (!this->connector.connect(address, port)){
-		::Sleep(100);
-	}
+	while (!this->connector.connect(address, port)){ ::Sleep(100); }
 	HttpRequest request;
 	request.Type = "PUT";
 	request.ContentType = "multipart/form-data";
@@ -38,9 +36,40 @@ HttpResponse HttpClient::sendRequest(string resource, map<string, string> formDa
 	auto s = HttpUtils::serialize(request);
 	this->connector.sendString(s);
 	this->connector.shutDownSend();
-	this->connector.recvString('\n');
+	auto resString = this->connector.recvString();
 	this->connector.shutDown();
-	return HttpResponse();
+	// Deserialize the response string and return
+	return this->deserializeResponse(resString);
+}
+
+HttpResponse HttpClient::deserializeResponse(string responseString)
+{
+	HttpResponse response;
+	stringstream ss(responseString);
+	string line;
+	// Process header;
+	std::getline(ss, line);
+	auto headers = Utilities::StringHelper::split(line, ' ');
+	response.Protocol = headers[0];
+	response.StatusCode = stoi(headers[1]);
+	response.StatusText = headers[2];
+	while (std::getline(ss, line)) {
+		if (line.empty())
+			break;
+		string command = Utilities::StringHelper::trim(Utilities::StringHelper::split(line, ':')[0]);
+		string value = Utilities::StringHelper::trim(Utilities::StringHelper::split(line, ':')[1]);
+		if (command == "Content-Type")
+			response.ContentType = value;
+		else if (command == "Content-Length")
+			response.ContentLength = stoi(value);
+	}
+	// Content
+	string content;
+	while (std::getline(ss, line)) {
+		content += line + "\n";
+	}
+	response.contentString = content;
+	return response;
 }
 
 int main()
