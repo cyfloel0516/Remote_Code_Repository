@@ -47,6 +47,7 @@ HttpResponse RepositoryHttpServer::FilesCheckIn(HttpRequest request)
 	string folderPath = RepositoryHttpServer::repository_path + moduleName + "/";
 	
 	FileSystem::Directory::create(folderPath);
+	RepositoryMetadata metadata(request.FormData["ModuleName"], checkInVersion, closed);
 	// Store files to module folder.
 	for (auto it = request.files.begin(); it != request.files.end(); it++) {
 		auto fileName = it->first;
@@ -58,13 +59,17 @@ HttpResponse RepositoryHttpServer::FilesCheckIn(HttpRequest request)
 		file.open(FileSystem::File::out, FileSystem::File::binary);
 		file.putBuffer(fileContent.size(), &fileContent[0]);
 		file.close();
+		metadata.FileList.push_back(fileName);
 	}
 	// Save metadata to the folder
-	RepositoryMetadata metadata(request.FormData["ModuleName"], checkInVersion, closed);
+
+	
 	RepositoryMetadataHelper::SaveMetadata(folderPath, metadata);
 	
 	// Regenerate dependency relation
-	
+	if (metadata.Closed) {
+		RepositoryHttpServer::GenerateDependencyRelation();
+	}
 	return HttpResponse();
 }
 
@@ -73,9 +78,10 @@ void RepositoryHttpServer::GenerateDependencyRelation(){
 	analyser.InitTypeTable();
 	// go through each folder and see if the repository is closed, if yes, then take all files into the list for analysis
 	auto directories = FileSystem::Directory::getDirectories(RepositoryMetadataHelper::repository_path, "*");
+	std::for_each(directories.begin(), directories.end(), [](string &s) { s = RepositoryMetadataHelper::repository_path + s;});
 	for (auto dir : directories) {
 		auto metadata = RepositoryMetadataHelper::GetMetadata(dir);
-		if (metadata.Closed) {
+		if (!metadata.Name.empty() && metadata.Closed) {
 			// Do dependency analysis
 			auto dependencies = analyser.GetDependency(dir);
 			for (auto dep : dependencies) {
@@ -87,10 +93,9 @@ void RepositoryHttpServer::GenerateDependencyRelation(){
 				else
 					*it = dep;
 			}
+			RepositoryMetadataHelper::SaveMetadata(RepositoryMetadataHelper::repository_path + metadata.getFullName() + "/" , metadata);
 		}
-		RepositoryMetadataHelper::SaveMetadata(metadata);
 	}
-	
 }
 
 string RepositoryHttpServer::CurrentDatetimeString()

@@ -46,7 +46,7 @@ std::string RepositoryMetadataHelper::Serialize(RepositoryMetadata metadata)
 RepositoryMetadata RepositoryMetadataHelper::Deserialize(string metadataString)
 {
 	Document d;
-	d.Parse(metadataString.c_str());
+	d.Parse(StringRef(metadataString.c_str()));
 	RepositoryMetadata metadata;
 	metadata.Name = d["Name"].GetString();
 	metadata.Version = d["Version"].GetString();
@@ -78,10 +78,18 @@ void RepositoryMetadataHelper::SaveMetadata(string modulePath, RepositoryMetadat
 
 RepositoryMetadata RepositoryMetadataHelper::GetMetadata(string modulePath)
 {
-	auto filePath = modulePath + "\metadata.json";
-	FileSystem::File metadataFile(filePath);
-	std::string metadataString = metadataFile.readAll();
-	return RepositoryMetadataHelper::Deserialize(metadataString);
+	auto filePath = modulePath + "/metadata.json";
+	if (FileSystem::File::exists(filePath)) {
+		FileSystem::File metadataFile(filePath);
+		metadataFile.open(FileSystem::File::in);
+		std::string metadataString = metadataFile.readAll();
+		metadataFile.close();
+		return RepositoryMetadataHelper::Deserialize(metadataString);
+	}
+	else {
+		return RepositoryMetadata();
+	}
+
 }
 
 RepositoryMetadata::RepositoryMetadata(){}

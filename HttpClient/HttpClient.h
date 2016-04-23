@@ -2,6 +2,8 @@
 #include "../Sockets/Sockets.h"
 #include "../HttpBase/HttpPacket.h"
 #include "../FileSystem_Windows/FileSystem.h"
+
+using namespace std;
 class HttpClient {
 public:
 	// Default Constructor Function
@@ -13,7 +15,7 @@ public:
 	void setConnection(std::string address, int port);
 	
 	// Send file through HTTP
-	HttpResponse sendRequest(std::vector<std::string> filePaths);
+	HttpResponse sendRequest(string resource, map<string, string> formData, vector<string> filePaths);
 
 private:
 	SocketConnecter connector;

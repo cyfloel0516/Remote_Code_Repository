@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{64B84804-33CC-4EA1-A1BD-FF7422E859BD}</ProjectGuid>
+    <ProjectGuid>{0002C270-3F29-44A7-AD29-5C431DD3CDFC}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>HttpServer</RootNamespace>
+    <RootNamespace>MetricsExecutive</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -134,39 +134,27 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="HttpServer.h" />
-    <ClInclude Include="RepositoryDependencyAnalyser.h" />
-    <ClInclude Include="RepositoryHttpServer.h" />
-    <ClInclude Include="RepositoryMetadata.h" />
+    <ClInclude Include="MetricsExecutive.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="HttpServer.cpp" />
-    <ClCompile Include="RepositoryDependencyAnalyser.cpp" />
-    <ClCompile Include="RepositoryHttpServer.cpp" />
-    <ClCompile Include="RepositoryMetadata.cpp" />
+    <ProjectReference Include="..\AstTree\AstTree.vcxproj">
+      <Project>{021f8386-0c0e-4b23-af21-f2d3d6db38c0}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\FileSystem_Windows\FileSystem_Windows.vcxproj">
+      <Project>{55a50fba-d8c5-44e1-ae31-eeb570ac3b77}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\MetricsAnalysis\MetricsAnalysis.vcxproj">
+      <Project>{d16ac44b-40ef-419e-81ca-58d1894510ce}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Parser\Parser.vcxproj">
+      <Project>{1285edeb-1155-45f7-a381-019288a05b47}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\ScopeStack\ScopeStack.vcxproj">
+      <Project>{25df863e-06ad-4191-bbd3-310d82c9deb1}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DependencyAnalysis\DependencyAnalysis.vcxproj">
-      <Project>{e73e709f-9584-41a7-8f34-0bb8bf25643f}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\HttpBase\HttpBase.vcxproj">
-      <Project>{dff0023d-01fb-4848-8554-7cda428c8ce8}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\ParallelDependencyExecutive\ParallelDependencyExecutive.vcxproj">
-      <Project>{8a5f974a-3fba-494d-81e2-c176488899cf}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Sockets\Sockets.vcxproj">
-      <Project>{ca3129b8-1bf4-44c9-b116-53ec72d0bccb}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\ThreadHelper\ThreadHelper.vcxproj">
-      <Project>{19558e2a-19ef-4c22-a66d-d6076c54a630}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Utilities\Utilities.vcxproj">
-      <Project>{462b43b2-8b13-4178-bf2a-903f76f1985c}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\WindowsHelpers\zWindowsHelpers.vcxproj">
-      <Project>{3407bbc5-5bc7-4bd7-860d-cbc24715737b}</Project>
-    </ProjectReference>
+    <ClCompile Include="MetricsExecutive.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

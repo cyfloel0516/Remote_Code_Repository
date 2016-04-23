@@ -19,14 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{64B84804-33CC-4EA1-A1BD-FF7422E859BD}</ProjectGuid>
+    <ProjectGuid>{25DF863E-06AD-4191-BBD3-310D82C9DEB1}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>HttpServer</RootNamespace>
+    <RootNamespace>ScopeStack</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -80,7 +80,7 @@
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -131,42 +131,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
+    <ClCompile Include="ScopeStack.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="HttpServer.h" />
-    <ClInclude Include="RepositoryDependencyAnalyser.h" />
-    <ClInclude Include="RepositoryHttpServer.h" />
-    <ClInclude Include="RepositoryMetadata.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="HttpServer.cpp" />
-    <ClCompile Include="RepositoryDependencyAnalyser.cpp" />
-    <ClCompile Include="RepositoryHttpServer.cpp" />
-    <ClCompile Include="RepositoryMetadata.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DependencyAnalysis\DependencyAnalysis.vcxproj">
-      <Project>{e73e709f-9584-41a7-8f34-0bb8bf25643f}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\HttpBase\HttpBase.vcxproj">
-      <Project>{dff0023d-01fb-4848-8554-7cda428c8ce8}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\ParallelDependencyExecutive\ParallelDependencyExecutive.vcxproj">
-      <Project>{8a5f974a-3fba-494d-81e2-c176488899cf}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Sockets\Sockets.vcxproj">
-      <Project>{ca3129b8-1bf4-44c9-b116-53ec72d0bccb}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\ThreadHelper\ThreadHelper.vcxproj">
-      <Project>{19558e2a-19ef-4c22-a66d-d6076c54a630}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Utilities\Utilities.vcxproj">
-      <Project>{462b43b2-8b13-4178-bf2a-903f76f1985c}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\WindowsHelpers\zWindowsHelpers.vcxproj">
-      <Project>{3407bbc5-5bc7-4bd7-860d-cbc24715737b}</Project>
-    </ProjectReference>
+    <ClInclude Include="ScopeStack.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

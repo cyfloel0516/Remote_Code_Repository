@@ -17,18 +17,20 @@ void HttpClient::setConnection(std::string address, int port)
 	this->port = port;
 }
 
-HttpResponse HttpClient::sendRequest(std::vector<std::string> filePaths)
+HttpResponse HttpClient::sendRequest(string resource, map<string, string> formData, vector<string> filePaths)
 {
 	SocketSystem ss;
-	while (!this->connector.connect(address, port))
-	{
+	while (!this->connector.connect(address, port)){
 		::Sleep(100);
 	}
 	HttpRequest request;
 	request.Type = "PUT";
-	request.ContentType = "files";
-	request.Resource = "/repository/checkin";
-	request.FormData.insert({ "ModuleName", "TestModule" });
+	request.ContentType = "multipart/form-data";
+	//request.Resource = "/repository/checkin";
+	request.Resource = resource;
+	for (auto it = formData.begin(); it != formData.end(); it++)
+		request.FormData.insert({ it->first, it->second });
+		//request.FormData.insert({ "ModuleName", "TestModule" });
 	for (auto filePath : filePaths) {
 		request.files.insert({ filePath, nullptr });
 	}
@@ -40,17 +42,26 @@ HttpResponse HttpClient::sendRequest(std::vector<std::string> filePaths)
 	return HttpResponse();
 }
 
-
-
 int main()
 {
-
 	try
 	{
-		std::vector<std::string> files{ "./HttpClient.cpp", "./HttpClient.h" };
+		
+		//map<string, string> formData;
+		//formData.insert({ "ModuleName", "TestModule" });
+		//formData.insert({ "Closed", "True" });
+		//std::vector<std::string> files{ "./HttpClient.cpp", "./HttpClient.h" };
+		//HttpClient client;
+		//client.setConnection("localhost", 9080);
+		//client.sendRequest("/repository/checkin", formData, files);
+
+		map<string, string> formData;
+		formData.insert({ "ModuleName", "TestModule" });
+		formData.insert({ "Closed", "True" });
+		std::vector<std::string> files{ "../Sockets/Sockets.cpp", "../Sockets/Sockets.h" };
 		HttpClient client;
 		client.setConnection("localhost", 9080);
-		client.sendRequest(files);
+		client.sendRequest("/repository/checkin", formData, files);
 	}
 	catch (std::exception& ex)
 	{

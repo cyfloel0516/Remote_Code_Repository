@@ -22,5 +22,5 @@ public:
 private:
 	string modulePath;
 	map<string, string> moduleLookupTable;
-	TypeTable* typeTable;
+	TypeTable typeTable;
 };
