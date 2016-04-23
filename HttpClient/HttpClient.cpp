@@ -39,6 +39,7 @@ HttpResponse HttpClient::sendRequest(string resource, map<string, string> formDa
 	this->connector.sendString(s);
 	this->connector.shutDownSend();
 	this->connector.recvString('\n');
+	this->connector.shutDown();
 	return HttpResponse();
 }
 
@@ -46,22 +47,21 @@ int main()
 {
 	try
 	{
-		
-		//map<string, string> formData;
-		//formData.insert({ "ModuleName", "TestModule" });
-		//formData.insert({ "Closed", "True" });
-		//std::vector<std::string> files{ "./HttpClient.cpp", "./HttpClient.h" };
-		//HttpClient client;
-		//client.setConnection("localhost", 9080);
-		//client.sendRequest("/repository/checkin", formData, files);
-
 		map<string, string> formData;
-		formData.insert({ "ModuleName", "TestModule" });
+		formData.insert({ "ModuleName", "HttpClient" });
 		formData.insert({ "Closed", "True" });
-		std::vector<std::string> files{ "../Sockets/Sockets.cpp", "../Sockets/Sockets.h" };
+		std::vector<std::string> files{ "./HttpClient.cpp", "./HttpClient.h" };
 		HttpClient client;
 		client.setConnection("localhost", 9080);
 		client.sendRequest("/repository/checkin", formData, files);
+
+		map<string, string> formData1;
+		formData1.insert({ "ModuleName", "Sockets" });
+		formData1.insert({ "Closed", "True" });
+		std::vector<std::string> files1{ "../Sockets/Sockets.cpp", "../Sockets/Sockets.h" };
+		HttpClient client1;
+		client1.setConnection("localhost", 9080);
+		client1.sendRequest("/repository/checkin", formData1, files1);
 	}
 	catch (std::exception& ex)
 	{

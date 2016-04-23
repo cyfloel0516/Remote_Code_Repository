@@ -28,13 +28,21 @@ void RepositoryHttpServer::CheckRepositoryExist(){
 		FileSystem::Directory::create(RepositoryHttpServer::repository_path);
 }
 
-std::string RepositoryHttpServer::GetCurrentOpenedModule(string moduleName)
+RepositoryMetadata RepositoryHttpServer::GetCurrentOpenedModule(string module)
 {
-	auto moduleFolders = FileSystemSearchHelper::searchDirectories(RepositoryHttpServer::repository_path, moduleName + "_*");
+	RepositoryMetadata metadata;
+	auto moduleFolders = FileSystemSearchHelper::searchDirectories(RepositoryHttpServer::repository_path, module + "__*");
+	auto checkInVersion = RepositoryHttpServer::CurrentDatetimeString();
+	auto moduleName = module + "__" + checkInVersion;
+	metadata.Name = module;
+	metadata.Version = checkInVersion;
 	for (auto folderPath : moduleFolders) {
-		auto metaDataFile = folderPath + "/" + "metadata.json";
+		auto metadataT = RepositoryMetadataHelper::GetMetadata(folderPath);
+		if (!metadataT.Closed) {
+			metadata = metadataT;
+		}
 	}
-	return std::string();
+	return metadata;
 }
 
 HttpResponse RepositoryHttpServer::FilesCheckIn(HttpRequest request)
@@ -42,12 +50,14 @@ HttpResponse RepositoryHttpServer::FilesCheckIn(HttpRequest request)
 	RepositoryHttpServer::CheckRepositoryExist();
 	vector<string> fileList;
 	bool closed = request.FormData["Closed"] == "True";
-	auto checkInVersion = RepositoryHttpServer::CurrentDatetimeString();
-	auto moduleName = request.FormData["ModuleName"] + "__" + checkInVersion;
-	string folderPath = RepositoryHttpServer::repository_path + moduleName + "/";
-	
+	//auto checkInVersion = RepositoryHttpServer::CurrentDatetimeString();
+	//auto moduleName = request.FormData["ModuleName"] + "__" + checkInVersion;
+	auto moduleName = request.FormData["ModuleName"];
+	auto metadata = this->GetCurrentOpenedModule(moduleName);
+	auto folderPath = RepositoryMetadataHelper::repository_path + metadata.getFullName() + "/";
 	FileSystem::Directory::create(folderPath);
-	RepositoryMetadata metadata(request.FormData["ModuleName"], checkInVersion, closed);
+	//RepositoryMetadata metadata(request.FormData["ModuleName"], checkInVersion, closed);
+	metadata.Closed = closed;
 	// Store files to module folder.
 	for (auto it = request.files.begin(); it != request.files.end(); it++) {
 		auto fileName = it->first;
@@ -62,8 +72,6 @@ HttpResponse RepositoryHttpServer::FilesCheckIn(HttpRequest request)
 		metadata.FileList.push_back(fileName);
 	}
 	// Save metadata to the folder
-
-	
 	RepositoryMetadataHelper::SaveMetadata(folderPath, metadata);
 	
 	// Regenerate dependency relation
@@ -71,6 +79,13 @@ HttpResponse RepositoryHttpServer::FilesCheckIn(HttpRequest request)
 		RepositoryHttpServer::GenerateDependencyRelation();
 	}
 	return HttpResponse();
+}
+
+std::string RepositoryHttpServer::GetVersionFromPath(std::string path)
+{
+	string moduleName = FileSystem::Path::getName(path);
+	auto index = moduleName.find_first_of("__");
+	return moduleName.substr(index + 1);
 }
 
 void RepositoryHttpServer::GenerateDependencyRelation(){
@@ -90,8 +105,11 @@ void RepositoryHttpServer::GenerateDependencyRelation(){
 				});
 				if (it == metadata.Dependencies.end())
 					metadata.Dependencies.push_back(dep);
-				else
-					*it = dep;
+				else if (*it < dep) {
+					// My design is not to modify existing dependency.
+					// In future, I may allow user to pointer to a specified version from GUI
+					//*it = dep;
+				}
 			}
 			RepositoryMetadataHelper::SaveMetadata(RepositoryMetadataHelper::repository_path + metadata.getFullName() + "/" , metadata);
 		}

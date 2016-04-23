@@ -11,7 +11,7 @@
 #include "../HttpBase/HttpPacket.h"
 #include "../HttpBase/HttpUtils.h"
 #include "../FileSystem_Windows/FileSystem.h"
-
+#include "RepositoryMetadata.h"
 #include <string>
 
 using namespace std;
@@ -24,10 +24,13 @@ public:
 	void CheckRepositoryExist();
 
 	// Get current opend module folder, if no opend folder exist then create a new version and return it.
-	std::string GetCurrentOpenedModule(string moduleName);
+	RepositoryMetadata GetCurrentOpenedModule(string moduleName);
 
 	// Module or package check-in function
 	HttpResponse FilesCheckIn(HttpRequest request);
+	
+	// Get version from folder path
+	std::string GetVersionFromPath(std::string path);
 
 	// Regenerate the dependency relation
 	static void GenerateDependencyRelation();

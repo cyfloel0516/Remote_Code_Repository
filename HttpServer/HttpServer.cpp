@@ -11,6 +11,7 @@
 #include "../FileSystem_Windows/FileSystem.h"
 
 void HttpRequestHandler::operator()(Socket& socket_) {
+	this->request = HttpRequest();
 	// Process header
 	auto line = socket_.recvString('\n');
 	this->handleHeader(line);
