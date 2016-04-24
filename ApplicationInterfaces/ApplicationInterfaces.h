@@ -9,7 +9,8 @@
 #else
 #define APPLICATIONINTERFACES_API __declspec(dllimport)
 #endif
-
+#include <string>
+using namespace std;
 // This class is exported from the ApplicationInterfaces.dll
 class APPLICATIONINTERFACES_API CApplicationInterfaces {
 public:
@@ -17,6 +18,4 @@ public:
 	// TODO: add your methods here.
 };
 
-extern APPLICATIONINTERFACES_API int nApplicationInterfaces;
-
-extern "C"  APPLICATIONINTERFACES_API int fnApplicationInterfaces();
+extern "C"  APPLICATIONINTERFACES_API void sendRequest(const char *requestString, char *result, int length);

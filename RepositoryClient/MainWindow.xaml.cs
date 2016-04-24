@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Runtime.InteropServices;
+using Newtonsoft.Json;
 
 namespace RepositoryClient
 {
@@ -26,14 +27,25 @@ namespace RepositoryClient
             InitializeComponent();
         }
 
-        [DllImport("../../../Debug/ApplicationInterfaces.dll",EntryPoint = "fnApplicationInterfaces", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("../../../Debug/ApplicationInterfaces.dll",EntryPoint = "sendRequest", CallingConvention = CallingConvention.Cdecl)]
         //public static extern class CApplicationInterfaces;
-        public static extern int fnApplicationInterfaces();
-
+        public static extern void sendRequest(string s, StringBuilder b, int length);
 
         private void label_Loaded(object sender, RoutedEventArgs e)
         {
-            label.Content = fnApplicationInterfaces();
+            dynamic request = new {
+                resource = "test",
+                formData = new  Object[]{ new { key = "123", value = "value" } },
+                files = new string[] { "12345"}
+
+            };
+            var rS = JsonConvert.SerializeObject(request);
+            var result = new StringBuilder(100000);
+
+            sendRequest(rS, result, 100000);
+            label.Content =  result;
+            var s = result.ToString();
+            dynamic obj = JsonConvert.DeserializeObject(s);
             //label.Content = ApplicationInterfaces.Class1.Add(1, 2);
         }
     }
