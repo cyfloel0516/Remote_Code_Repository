@@ -15,6 +15,8 @@ using System.Windows.Shapes;
 using System.Runtime.InteropServices;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using RepositoryClient.Models;
+using System.IO;
 
 namespace RepositoryClient
 {
@@ -23,6 +25,7 @@ namespace RepositoryClient
     /// </summary>
     public partial class MainWindow : Window
     {
+        private List<RepositoryMetadata> metadatas;
         public MainWindow()
         {
             InitializeComponent();
@@ -54,29 +57,31 @@ namespace RepositoryClient
         private void upload_btn_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new System.Windows.Forms.FolderBrowserDialog();
-            System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+            dialog.ShowDialog();
             label.Content = dialog.SelectedPath;
+            if (String.IsNullOrEmpty(dialog.SelectedPath)) return;  // If use cancel selection then return
+            List<String> files = Directory.GetFiles(dialog.SelectedPath, "*.cpp").ToList();
+            files.AddRange(Directory.GetFiles(dialog.SelectedPath, "*.h"));
+            dynamic request = new
+            {
+                Resource = "/repository/checkin",
+                FormData = new Object[] { new { key = "ModuleName", value = new DirectoryInfo(dialog.SelectedPath).Name } },
+                Files = files.ToArray()
+            };
+
+            var rS = JsonConvert.SerializeObject(request);
+            var result = new StringBuilder(100000);
+            sendRequest(rS, result, 100000);
+            repo_list.ItemsSource = get_repo_list();
         }
 
         private void list_btn_Click(object sender, RoutedEventArgs e)
         {
-            dynamic request = new
-            {
-                Resource = "/repository/list",
-                FormData = new  Object[]{  },
-                Files = new string[] { }
-
-            };
-            var rS = JsonConvert.SerializeObject(request);
-
-            //sendRequest(rS, result, 100000);
-            var result = new StringBuilder(100000);
-            sendRequest(rS, result, 100000);
-            label.Content = result;
+            repo_list.ItemsSource = get_repo_list();
         }
 
-        private List<String> get_repo_list(){
-            List<String> repoList = new List<string>();
+        private List<RepositoryMetadata> get_repo_list(){
+            List<RepositoryMetadata> metadatas = new List<RepositoryMetadata>();
             dynamic request = new
             {
                 Resource = "/repository/list",
@@ -84,19 +89,35 @@ namespace RepositoryClient
                 Files = new string[] { }
 
             };
-            var rS = JsonConvert.SerializeObject(request);
 
+            var rS = JsonConvert.SerializeObject(request);
             //sendRequest(rS, result, 100000);
             var result = new StringBuilder(100000);
             sendRequest(rS, result, 100000);
             var resultString = result.ToString();
-            List<dynamic> jsonResult = JsonConvert.DeserializeObject<List<dynamic>>(resultString);
-            //List<dynamic> jsonResult = JsonConvert.DeserializeObject<List<dynamic>>("[{'Name':'1', 'b':'2'}]");
+            //List<dynamic> jsonResult = JsonConvert.DeserializeObject<List<dynamic>>(resultString);
+            List<RepositoryMetadata> jsonResult = JsonConvert.DeserializeObject<List<RepositoryMetadata>>(resultString);
             foreach (var o in jsonResult)
             {
-                repoList.Add(((JValue)o.Name).ToString());
+                metadatas.Add(o);
             }
-            return repoList;
+            this.metadatas = metadatas;
+            return metadatas;
+        }
+
+        private void list_btn_Copy_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void view_detail_btn_Click(object sender, RoutedEventArgs e)
+        {
+            if(repo_list.SelectedItems.Count == 0){
+                MessageBox.Show(this, "Please select one record in the list below.", "Cannot get detail");
+                return;
+            }
+            DetailWindow detailWindow = new DetailWindow((RepositoryMetadata)repo_list.SelectedItems[0]);
+            detailWindow.ShowDialog();
         }
     }
 

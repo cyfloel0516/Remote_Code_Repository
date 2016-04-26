@@ -5,17 +5,39 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RepositoryClient"
         mc:Ignorable="d"
-        Title="Repository Client" Height="600" Width="800">
+        Title="Repository Client" Height="500" Width="800">
     <Grid>
-        <Label x:Name="label" Content="Label" HorizontalAlignment="Left" Margin="224,10,0,0" VerticalAlignment="Top" Loaded="label_Loaded"/>
-        <Button x:Name="upload_btn" Content="Upload Package" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="82" Height="26" Click="upload_btn_Click"/>
-        <Button x:Name="list_btn" Content="List Repository" HorizontalAlignment="Left" Margin="113,10,0,0" VerticalAlignment="Top" Width="82" Height="26" Click="list_btn_Click"/>
-        <ListView x:Name="repo_list" HorizontalAlignment="Left" Height="262" Margin="10,57,0,0" VerticalAlignment="Top" Width="774" >
+        <Label x:Name="label" Content="Label" HorizontalAlignment="Left" Margin="10,435,0,0" VerticalAlignment="Top" Loaded="label_Loaded" RenderTransformOrigin="-1.854,14.707"/>
+        <Button x:Name="upload_btn"  HorizontalAlignment="Left" Margin="10,10,0,0" 
+                VerticalAlignment="Top" Width="120" Height="26" Click="upload_btn_Click" Background="White" Cursor="Hand">
+            <StackPanel Orientation="Horizontal" Width="113">
+                <Image Source="images/upload.png" Width="24" Height="24" Margin="0, 0, 4, 0"/>
+                <TextBlock Text="Upload Package" VerticalAlignment="Center" Width="87"/>
+            </StackPanel>
+        </Button>
+        <Button x:Name="list_btn" HorizontalAlignment="Left" Margin="143,10,0,0" 
+                VerticalAlignment="Top" Width="120" Height="26" Click="list_btn_Click" Background="White" Cursor="Hand">
+            <StackPanel Orientation="Horizontal" Width="113">
+                <Image Source="images/reload.png" Width="24" Height="24" Margin="0, 0, 4, 0"/>
+                <TextBlock Text="List Packages" VerticalAlignment="Center" Width="87"/>
+            </StackPanel>
+        </Button>
+        <Button x:Name="view_detail_btn" HorizontalAlignment="Left" Margin="278,10,0,0" 
+        	VerticalAlignment="Top" Width="120" Height="26" Click="view_detail_btn_Click" Background="White" Cursor="Hand">
+            <StackPanel Orientation="Horizontal" Width="113">
+                <Image Source="images/detail.png" Width="24" Height="24" Margin="0, 0, 4, 0"/>
+                <TextBlock Text="View Detail" VerticalAlignment="Center" Width="87"/>
+            </StackPanel>
+        </Button>
+        <ListView x:Name="repo_list" HorizontalAlignment="Left" Height="372" Margin="10,50,0,0" VerticalAlignment="Top" Width="761" >
             <ListView.View>
                 <GridView>
-                    <GridViewColumn/>
+                    <GridViewColumn Header="Name" Width="420" DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="Version" Width="120" DisplayMemberBinding="{Binding Version}" />
+                    <GridViewColumn Header="Closed" Width="60" DisplayMemberBinding="{Binding Closed}" />
                 </GridView>
             </ListView.View>
         </ListView>
+
     </Grid>
 </Window>
