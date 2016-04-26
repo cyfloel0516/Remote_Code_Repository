@@ -26,8 +26,10 @@ public:
 	// Get current opend module folder, if no opend folder exist then create a new version and return it.
 	RepositoryMetadata GetCurrentOpenedModule(string moduleName);
 
-	// Module or package check-in function
+	// Module or package check-in function, it corresponds to the route: "/repository/checkin"
 	HttpResponse FilesCheckIn(HttpRequest request);
+
+	HttpResponse ListRepository(HttpRequest request);
 	
 	// Get version from folder path
 	std::string GetVersionFromPath(std::string path);

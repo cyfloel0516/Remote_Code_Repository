@@ -14,6 +14,7 @@ void HttpRequestHandler::operator()(Socket& socket_) {
 	this->request = HttpRequest();
 	// Process header
 	auto line = socket_.recvString('\n');
+	cout << line << endl;
 	this->handleHeader(line);
 	while (socket_.bytesWaiting() > 0) {
 		line = socket_.recvString('\n');
@@ -30,12 +31,14 @@ void HttpRequestHandler::operator()(Socket& socket_) {
 	}
 	// Look up for the route table and let the handler to handle specified request
 	auto route = this->routeTable.find(this->request.Resource);
+	cout << "accept " + request.Resource << endl;
 	HttpResponse response;
 	if (route != this->routeTable.end()) {
 		// Route existed
 		response = route->second(this->request);
 	}
-	socket_.sendString(HttpUtils::serialize(response));
+	auto s = HttpUtils::serialize(response);
+	socket_.sendString(s);
 }
 
 void HttpRequestHandler::addRoute(std::string url, std::function<HttpResponse(HttpRequest)> handler){

@@ -17,7 +17,7 @@ TypeTable test_getType(ThreadPool& pool, vector<string> files) {
 		results.emplace_back(
 			pool.enqueue([file]() {
 				string startMessage = "Job starts: analysis for file: " + file + "\n";
-				cout << startMessage;
+				//cout << startMessage;
 				ClassDefinition *classDef = new ClassDefinition();
 				TypeDefDefinition *typeDef = new TypeDefDefinition();
 				AliasDefinition *aliasDef = new AliasDefinition();

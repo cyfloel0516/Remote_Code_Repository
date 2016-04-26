@@ -9,6 +9,7 @@
 #include "../rapidjson/document.h"
 #include "../rapidjson/writer.h"
 #include "../rapidjson/stringbuffer.h"
+#include <algorithm>
 using namespace rapidjson;
 
 const string RepositoryMetadataHelper::repository_path = FileSystem::Path::getFullFileSpec("../Code_Repository/");
@@ -90,6 +91,44 @@ RepositoryMetadata RepositoryMetadataHelper::GetMetadata(string modulePath)
 		return RepositoryMetadata();
 	}
 
+}
+
+string RepositoryMetadataHelper::Serialize(vector<RepositoryMetadata> metadatas)
+{
+	Document result;
+	result.SetArray();
+	rapidjson::Document::AllocatorType& allocator = result.GetAllocator();
+
+	for (auto i = 0; i < metadatas.size(); i++) {
+		auto metadata = metadatas[i];
+		rapidjson::Value d(rapidjson::kObjectType); 
+		d.SetObject();
+		d.AddMember("Name", Value(metadata.Name.c_str(), allocator).Move(), allocator);
+		d.AddMember("Version", Value(metadata.Version.c_str(), allocator).Move(), allocator);
+		d.AddMember("Closed", metadata.Closed, allocator);
+
+		//Add dependency array to json object
+		rapidjson::Value dependencyArray(rapidjson::kArrayType);
+		for (auto dependency : metadata.Dependencies) {
+			dependencyArray.PushBack(Value(dependency.c_str(), allocator), allocator);
+		}
+		d.AddMember("Dependencies", dependencyArray, allocator);
+
+		// Add file list array to json object
+		rapidjson::Value fileListArray(rapidjson::kArrayType);
+		for (auto file : metadata.FileList) {
+			fileListArray.PushBack(Value(file.c_str(), allocator), allocator);
+		}
+		d.AddMember("FileList", fileListArray, allocator);
+
+		result.PushBack(d, allocator);
+	}
+
+	StringBuffer buffer;
+	Writer<StringBuffer> writer(buffer);
+	result.Accept(writer);
+	const char* charString = buffer.GetString();
+	return std::string(charString);
 }
 
 RepositoryMetadata::RepositoryMetadata(){}

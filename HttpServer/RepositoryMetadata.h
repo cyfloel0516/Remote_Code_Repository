@@ -26,6 +26,7 @@ struct RepositoryMetadata {
 	std::string getFullName();
 
 	static bool VersionCompared(string version1, string version2);
+
 };
 
 // This class is a helper class contains some heler function to generate or get repository metadata json or object
@@ -44,4 +45,6 @@ public:
 	static RepositoryMetadata GetMetadata(string modulePath);
 
 	const static string repository_path;
+
+	static string Serialize(vector<RepositoryMetadata> metadatas);
 };

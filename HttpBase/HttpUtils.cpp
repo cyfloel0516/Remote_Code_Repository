@@ -10,6 +10,13 @@
 #include "../FileSystem_Windows/FileSystem.h"
 #include <vector>
 #include <iostream>
+#include "../rapidjson/document.h"
+#include "../rapidjson/writer.h"
+#include "../rapidjson/stringbuffer.h"
+#include <algorithm>
+#include <iostream>
+using namespace std;
+using namespace rapidjson;
 
 std::string HttpUtils::getCommand(std::string line) {
 	int pos = line.find(':');
@@ -106,6 +113,28 @@ HttpRequestLine HttpUtils::getLineData(std::string line) {
 		lineData.Value = HttpUtils::getValue(line);
 	}
 	return lineData;
+}
+
+HttpRequest HttpUtils::deserializeRequest(std::string str)
+{	
+	cout << str << endl;
+	HttpRequest request;
+	Document d;
+	d.Parse(StringRef(str.c_str()));
+	request.Resource = d["Resource"].GetString();
+
+	// Get dependencies and file list
+	const Value& formData = d["FormData"];
+	for (SizeType i = 0; i < formData.Size(); i++) {
+		request.FormData.insert({ formData[i]["key"].GetString(), formData[i]["value"].GetString() });
+	}
+
+	const Value& files = d["Files"];
+	for (SizeType i = 0; i < files.Size(); i++) {
+		request.files.insert({ files[i].GetString(), nullptr });
+	}
+
+	return request;
 }
 
 std::vector<char> HttpUtils::getFileContent(std::string filename) {

@@ -26,6 +26,7 @@ HttpResponse HttpClient::sendRequest(string resource, map<string, string> formDa
 	request.ContentType = "multipart/form-data";
 	//request.Resource = "/repository/checkin";
 	request.Resource = resource;
+	//cout << request.Resource << endl;
 	for (auto it = formData.begin(); it != formData.end(); it++)
 		request.FormData.insert({ it->first, it->second });
 		//request.FormData.insert({ "ModuleName", "TestModule" });
@@ -68,6 +69,7 @@ HttpResponse HttpClient::deserializeResponse(string responseString)
 	while (std::getline(ss, line)) {
 		content += line + "\n";
 	}
+	cout << content << endl;
 	response.contentString = content;
 	return response;
 }

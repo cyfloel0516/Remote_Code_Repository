@@ -5,10 +5,6 @@ VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "remote_code_repository", "remote_code_repository\remote_code_repository.vcxproj", "{798B8893-BA69-446F-B7DC-DF1DD4FEDCA5}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client", "Client\Client.vcxproj", "{9DF44650-FE64-456E-A316-2695AB5F893E}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Server", "Server\Server.vcxproj", "{9AC1D871-0F10-419F-B3A3-4DD65D80E86C}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sockets", "Sockets\Sockets.vcxproj", "{CA3129B8-1BF4-44C9-B116-53EC72D0BCCB}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Utilities", "Utilities\Utilities.vcxproj", "{462B43B2-8B13-4178-BF2A-903F76F1985C}"
@@ -71,22 +67,6 @@ Global
 		{798B8893-BA69-446F-B7DC-DF1DD4FEDCA5}.Release|x64.Build.0 = Release|x64
 		{798B8893-BA69-446F-B7DC-DF1DD4FEDCA5}.Release|x86.ActiveCfg = Release|Win32
 		{798B8893-BA69-446F-B7DC-DF1DD4FEDCA5}.Release|x86.Build.0 = Release|Win32
-		{9DF44650-FE64-456E-A316-2695AB5F893E}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{9DF44650-FE64-456E-A316-2695AB5F893E}.Debug|x64.ActiveCfg = Debug|Win32
-		{9DF44650-FE64-456E-A316-2695AB5F893E}.Debug|x86.ActiveCfg = Debug|Win32
-		{9DF44650-FE64-456E-A316-2695AB5F893E}.Debug|x86.Build.0 = Debug|Win32
-		{9DF44650-FE64-456E-A316-2695AB5F893E}.Release|Any CPU.ActiveCfg = Release|Win32
-		{9DF44650-FE64-456E-A316-2695AB5F893E}.Release|x64.ActiveCfg = Release|Win32
-		{9DF44650-FE64-456E-A316-2695AB5F893E}.Release|x86.ActiveCfg = Release|Win32
-		{9DF44650-FE64-456E-A316-2695AB5F893E}.Release|x86.Build.0 = Release|Win32
-		{9AC1D871-0F10-419F-B3A3-4DD65D80E86C}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{9AC1D871-0F10-419F-B3A3-4DD65D80E86C}.Debug|x64.ActiveCfg = Debug|Win32
-		{9AC1D871-0F10-419F-B3A3-4DD65D80E86C}.Debug|x86.ActiveCfg = Debug|Win32
-		{9AC1D871-0F10-419F-B3A3-4DD65D80E86C}.Debug|x86.Build.0 = Debug|Win32
-		{9AC1D871-0F10-419F-B3A3-4DD65D80E86C}.Release|Any CPU.ActiveCfg = Release|Win32
-		{9AC1D871-0F10-419F-B3A3-4DD65D80E86C}.Release|x64.ActiveCfg = Release|Win32
-		{9AC1D871-0F10-419F-B3A3-4DD65D80E86C}.Release|x86.ActiveCfg = Release|Win32
-		{9AC1D871-0F10-419F-B3A3-4DD65D80E86C}.Release|x86.Build.0 = Release|Win32
 		{CA3129B8-1BF4-44C9-B116-53EC72D0BCCB}.Debug|Any CPU.ActiveCfg = Debug|Win32
 		{CA3129B8-1BF4-44C9-B116-53EC72D0BCCB}.Debug|x64.ActiveCfg = Debug|Win32
 		{CA3129B8-1BF4-44C9-B116-53EC72D0BCCB}.Debug|x86.ActiveCfg = Debug|Win32

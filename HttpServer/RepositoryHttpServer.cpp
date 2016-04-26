@@ -87,6 +87,30 @@ HttpResponse RepositoryHttpServer::FilesCheckIn(HttpRequest request)
 	return res;
 }
 
+HttpResponse RepositoryHttpServer::ListRepository(HttpRequest request)
+{
+	vector<RepositoryMetadata> metadatas;
+	// Go through every folder in repository folder and get the metadata
+	auto directories = FileSystem::Directory::getDirectories(RepositoryMetadataHelper::repository_path, "*");
+	std::for_each(directories.begin(), directories.end(), [&](string &s) {
+		s = RepositoryMetadataHelper::repository_path + "/" + s;
+		auto metadata = RepositoryMetadataHelper::GetMetadata(s);
+		if(!metadata.Name.empty()){
+			metadatas.push_back(metadata);
+		}
+	});
+
+	// Serialize the result and return the response object
+	string result = RepositoryMetadataHelper::Serialize(metadatas);
+	auto res = HttpResponse();
+	res.contentString = result;
+	res.StatusCode = 200;
+	res.StatusText = "OK";
+	res.Protocol = "HTTP_681";
+	res.ContentType = "text/plain";
+	return res;
+}
+
 std::string RepositoryHttpServer::GetVersionFromPath(std::string path)
 {
 	string moduleName = FileSystem::Path::getName(path);
@@ -153,11 +177,18 @@ int main()
 		SocketSystem ss;
 		SocketListener sl(9080, Socket::IP4);
 		HttpRequestHandler cp;
-		std::function<HttpResponse(HttpRequest)> handler = [](HttpRequest request){
+		std::function<HttpResponse(HttpRequest)> checkInHandler = [](HttpRequest request){
 			RepositoryHttpServer handlerClass;
 			return handlerClass.FilesCheckIn(request);
 		};
-		cp.addRoute("/repository/checkin", handler);
+		std::function<HttpResponse(HttpRequest)> repoListHandler = [](HttpRequest request) {
+			RepositoryHttpServer handlerClass;
+			return handlerClass.ListRepository(request);
+		};
+
+		cp.addRoute("/repository/checkin", checkInHandler);
+		cp.addRoute("/repository/list", repoListHandler);
+
 		sl.start(cp);
 
 		std::cout.flush();

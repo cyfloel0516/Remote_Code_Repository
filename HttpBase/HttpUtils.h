@@ -31,6 +31,7 @@ public:
 	// Get command values after command definition
 	static HttpRequestLine getLineData(std::string line);
 
+	static HttpRequest deserializeRequest(std::string str);
 	// Put string into a char vector
 	static void putStringToVector(std::vector<char>& destination, std::string value);
 };

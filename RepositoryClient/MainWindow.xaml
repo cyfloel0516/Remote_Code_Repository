@@ -5,9 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RepositoryClient"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="Repository Client" Height="600" Width="800">
     <Grid>
-        <Label x:Name="label" Content="Label" HorizontalAlignment="Left" Margin="116,103,0,0" VerticalAlignment="Top" Loaded="label_Loaded"/>
-
+        <Label x:Name="label" Content="Label" HorizontalAlignment="Left" Margin="224,10,0,0" VerticalAlignment="Top" Loaded="label_Loaded"/>
+        <Button x:Name="upload_btn" Content="Upload Package" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="82" Height="26" Click="upload_btn_Click"/>
+        <Button x:Name="list_btn" Content="List Repository" HorizontalAlignment="Left" Margin="113,10,0,0" VerticalAlignment="Top" Width="82" Height="26" Click="list_btn_Click"/>
+        <ListView x:Name="repo_list" HorizontalAlignment="Left" Height="262" Margin="10,57,0,0" VerticalAlignment="Top" Width="774" >
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn/>
+                </GridView>
+            </ListView.View>
+        </ListView>
     </Grid>
 </Window>
