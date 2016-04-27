@@ -36,30 +36,15 @@ namespace RepositoryClient
         //public static extern class CApplicationInterfaces;
         public static extern void sendRequest(string s, StringBuilder b, int length);
 
-        private void label_Loaded(object sender, RoutedEventArgs e)
-        {
-            //dynamic request = new {
-            //    resource = "test",
-            //    formData = new  Object[]{ new { key = "123", value = "value" } },
-            //    files = new string[] { "12345"}
-
-            //};
-            //var rS = JsonConvert.SerializeObject(request);
-            //var result = new StringBuilder(100000);
-
-            ////sendRequest(rS, result, 100000);
-            //label.Content =  result;
-            //var s = result.ToString();
-            //dynamic obj = JsonConvert.DeserializeObject(s);
-            ////label.Content = ApplicationInterfaces.Class1.Add(1, 2);
-        }
-
         private void upload_btn_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new System.Windows.Forms.FolderBrowserDialog();
-            dialog.ShowDialog();
+            dialog.SelectedPath = Directory.GetCurrentDirectory();
+            var dialogResult = dialog.ShowDialog();
+
+            if (dialogResult == System.Windows.Forms.DialogResult.Cancel || String.IsNullOrEmpty(dialog.SelectedPath)) return;
+
             label.Content = dialog.SelectedPath;
-            if (String.IsNullOrEmpty(dialog.SelectedPath)) return;  // If use cancel selection then return
             List<String> files = Directory.GetFiles(dialog.SelectedPath, "*.cpp").ToList();
             files.AddRange(Directory.GetFiles(dialog.SelectedPath, "*.h"));
             dynamic request = new
@@ -118,6 +103,7 @@ namespace RepositoryClient
             }
             DetailWindow detailWindow = new DetailWindow((RepositoryMetadata)repo_list.SelectedItems[0]);
             detailWindow.ShowDialog();
+            repo_list.ItemsSource = get_repo_list();
         }
     }
 

@@ -29,7 +29,14 @@ public:
 	// Module or package check-in function, it corresponds to the route: "/repository/checkin"
 	HttpResponse FilesCheckIn(HttpRequest request);
 
+	// A handler to list all modules in repository, it corresponds to the route: "/repository/list"
 	HttpResponse ListRepository(HttpRequest request);
+	
+	// A handler to set the closed of metadata, it corresponds to the route: "/repository/close_module"
+	HttpResponse CloseModule(HttpRequest request);
+
+	// A handler to set the closed of metadata, it corresponds to the route: "/repository/close_module"
+	HttpResponse DownloadModule(HttpRequest request);
 	
 	// Get version from folder path
 	std::string GetVersionFromPath(std::string path);

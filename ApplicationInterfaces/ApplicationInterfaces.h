@@ -22,3 +22,9 @@ public:
 // requestString is the json format string of HttpRequest Object
 // Later on I may change the HttpBase package to CLR library thus both WPF and C++ project can use them directly
 extern "C"  APPLICATIONINTERFACES_API void sendRequest(const char *requestString, char *result, int length);
+
+
+// Send request to server and get the result.
+// requestString is the json format string of HttpRequest Object
+// Later on I may change the HttpBase package to CLR library thus both WPF and C++ project can use them directly
+extern "C"  APPLICATIONINTERFACES_API void getFile(const char *requestString, char *result, int length);

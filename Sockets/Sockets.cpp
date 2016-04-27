@@ -332,66 +332,45 @@ SocketConnecter::~SocketConnecter()
 
 bool SocketConnecter::connect(const std::string& ip, size_t port)
 {
-  size_t uport = htons((u_short)port);
-  std::string sPort = Conv<size_t>::toString(uport);
+  size_t uport = htons((u_short)port); std::string sPort = Conv<size_t>::toString(uport);
 
   // Resolve the server address and port
   const char* pTemp = ip.c_str();
   iResult = getaddrinfo(pTemp, sPort.c_str(), &hints, &result);  // was DEFAULT_PORT
-  if (iResult != 0) {
-    Show::write("\n\n  -- getaddrinfo failed with error: " + Conv<int>::toString(iResult));
-    return false;
-  }
+  if (iResult != 0) return false;
 
   // Attempt to connect to an address until one succeeds
   for (ptr = result; ptr != NULL; ptr = ptr->ai_next) {
 
-    char ipstr[INET6_ADDRSTRLEN];
-    void *addr;
-    char *ipver;
-
-    // get pointer to address - different fields in IPv4 and IPv6:
+    char ipstr[INET6_ADDRSTRLEN]; void *addr; char *ipver;
 
     if (ptr->ai_family == AF_INET) { // IPv4
       struct sockaddr_in *ipv4 = (struct sockaddr_in *)ptr->ai_addr;
       addr = &(ipv4->sin_addr);
       ipver = "IPv4";
-    }
-    else { // IPv6
+    } else { // IPv6
       struct sockaddr_in6 *ipv6 = (struct sockaddr_in6 *)ptr->ai_addr;
       addr = &(ipv6->sin6_addr);
       ipver = "IPv6";
     }
 
-    // convert the IP to a string and print it:
-    inet_ntop(ptr->ai_family, addr, ipstr, sizeof ipstr);
-    printf("\n  %s: %s", ipver, ipstr);
 
-    // Create a SOCKET for connecting to server
+    inet_ntop(ptr->ai_family, addr, ipstr, sizeof ipstr);
+
     socket_ = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
-    if (socket_ == INVALID_SOCKET) {
-      int error = WSAGetLastError();
-      Show::write("\n\n  -- socket failed with error: " + Conv<int>::toString(error));
-      return false;
-    }
+	if (socket_ == INVALID_SOCKET)  return false; 
+
 
     iResult = ::connect(socket_, ptr->ai_addr, (int)ptr->ai_addrlen);
-    if (iResult == SOCKET_ERROR) {
-      socket_ = INVALID_SOCKET;
-      int error = WSAGetLastError();
-      Show::write("\n  WSAGetLastError returned " + Conv<int>::toString(error));
-      continue;
-    }
+	if (iResult == SOCKET_ERROR)  continue; 
+
     break;
   }
 
   freeaddrinfo(result);
 
-  if (socket_ == INVALID_SOCKET) {
-    int error = WSAGetLastError();
-    Show::write("\n\n  -- unable to connect to server, error = " + Conv<int>::toString(error));
-    return false;
-  }
+  if (socket_ == INVALID_SOCKET) return false; 
+
   return true;
 }
 /////////////////////////////////////////////////////////////////////////////
@@ -555,46 +534,39 @@ void clearBuffer(Socket::byte* buffer, size_t BufLen)
 
 void ClientHandler::operator()(Socket& socket_)
 {
-  while (true)
-  {
+  while (true){
     // interpret test command
-
     std::string command = socket_.recvString();
     Show::write("\n  server rcvd command: " + command);
-    if (command == "Done")
-    {
+    if (command == "Done"){
       Show::write("\n  server sent : " + command);
       socket_.sendString(command);
       break;
     }
-    if (command.size() == 0)
-    {
+    if (command.size() == 0) {
       Show::write("\n  client connection closed");
       break;
     }
     //Show::write("\n  server recvd: " + command);
 
-    if (command == "TEST_STRING_HANDLING")
-    {
+    if (command == "TEST_STRING_HANDLING"){
       if (testStringHandling(socket_))
         Show::write("\n  ----String Handling test passed\n");
       else
         Show::write("\n  ----String Handling test failed\n");
       continue; // go back and get another command
     }
-    if (command == "TEST_BUFFER_HANDLING")
-    {
-      if (testBufferHandling(socket_))
-        Show::write("\n  ----Buffer Handling test passed\n");
-      else
-        Show::write("\n  ----Buffer Handling test failed\n");
-      continue;  // get another command
-    }
+    //if (command == "TEST_BUFFER_HANDLING"){
+    //  if (testBufferHandling(socket_))
+    //    Show::write("\n  ----Buffer Handling test passed\n");
+    //  else
+    //    Show::write("\n  ----Buffer Handling test failed\n");
+    //  continue;  // get another command
+    //}
   }
 
   // we get here if command isn't requesting a test, e.g., "TEST_STOP"
 
-  Show::write("\n");
   Show::write("\n  ClientHandler socket connection closing");
   socket_.shutDown();
   socket_.close();
@@ -730,54 +702,43 @@ void clientTestBufferHandling(Socket& si)
   const int BufLen = 20;
   Socket::byte buffer[BufLen];
 
-  for (size_t i = 0; i < 5; ++i)
-  {
+  for (size_t i = 0; i < 5; ++i){
     std::string text = "Hello World " + std::string("#") + Conv<size_t>::toString(i + 1);
-    for (size_t i = 0; i < BufLen; ++i)
-    {
-      if (i < text.size())
-        buffer[i] = text[i];
-      else
-        buffer[i] = '.';
+    for (size_t i = 0; i < BufLen; ++i){
+      if (i < text.size()) buffer[i] = text[i];
+      else buffer[i] = '.';
     }
     buffer[BufLen - 1] = '\0';
     si.send(BufLen, buffer);
-    Show::write("\n  client sent : " + std::string(buffer));
+    //Show::write("\n  client sent : " + std::string(buffer));
   }
   std::string text = "TEST_END";
-  for (size_t i = 0; i < BufLen; ++i)
-  {
-    if (i < text.size())
-      buffer[i] = text[i];
-    else
-      buffer[i] = '.';
+  for (size_t i = 0; i < BufLen; ++i){
+    if (i < text.size()) buffer[i] = text[i];
+    else buffer[i] = '.';
   }
   buffer[BufLen - 1] = '\0';
   si.send(BufLen, buffer);
-  Show::write("\n  client sent : " + std::string(buffer));
+  //Show::write("\n  client sent : " + std::string(buffer));
 
   bool ok;
-  while (true)
-  {
+  /*while (true){
     ok = si.recv(BufLen, buffer);
-    if (!ok)
-    {
+    if (!ok){
       Show::write("\n  client unable to receive");
       break;
     }
     std::string str(buffer);
-    if (str.size() == 0)
-    {
+    if (str.size() == 0){
       Show::write("\n  client detected closed connection");
       break;
     }
     Show::write("\n  client rcvd : " + str);
-    if (str.find("TEST_END") != std::string::npos)
-    {
+    if (str.find("TEST_END") != std::string::npos) {
       Show::write("\n  End of buffer handling test");
       break;
     }
-  }
+  }*/
 }
 //----< demonstration >------------------------------------------------------
 

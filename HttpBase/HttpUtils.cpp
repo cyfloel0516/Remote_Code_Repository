@@ -36,7 +36,7 @@ std::string HttpUtils::getValue(std::string line) {
 	return value;
 }
 
-std::string HttpUtils::serialize(HttpRequest request) {
+std::string HttpUtils::serialize(HttpRequest request, bool withfile) {
 	std::string result;
 	int requestSize = 1000, i = 0, j = 0;
 	bool isFile = false;
@@ -67,7 +67,7 @@ std::string HttpUtils::serialize(HttpRequest request) {
 	}
 
 	// Serialize file content
-	if (isFile) {
+	if (isFile && withfile) {
 		result += "\n" + request.boundary + "\n";
 		for (auto it = request.files.begin(); it != request.files.end(); it++) {
 			auto filename = FileSystem::Path::getName(it->first);
@@ -86,12 +86,18 @@ std::string HttpUtils::serialize(HttpRequest request) {
 std::string HttpUtils::serialize(HttpResponse response)
 {
 	std::string result;
-	
-	result = response.Protocol + " "+ std::to_string(response.StatusCode) + " " + response.StatusText +  "\n";
-	result += "Content-Type: " + response.ContentType + "\n";
-	result += "Content-Length: " + std::to_string(response.contentString.size()) + "\n";
-	result += "\n" + response.contentString;
-
+	if (response.ContentType != "file") {
+		result = response.Protocol + " " + std::to_string(response.StatusCode) + " " + response.StatusText + "\n";
+		result += "Content-Type: " + response.ContentType + "\n";
+		result += "Content-Length: " + std::to_string(response.contentString.size()) + "\n";
+		result += "\n";
+		for (auto c : response.contentString) {
+			result += c;
+		}
+	}
+	else {
+		return response.contentString;
+	}
 	return result;
 }
 

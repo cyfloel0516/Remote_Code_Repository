@@ -18,6 +18,7 @@ public:
 	// This function go thought every closed package and get the type table.
 	void InitTypeTable();
 	
+	// Get dependency of a specified module
 	vector<string> GetDependency(string modulePath);
 private:
 	string modulePath;

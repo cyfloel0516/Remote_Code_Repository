@@ -4,7 +4,7 @@
 *
 * Author: Junkai Yang
 */
-
+#define NOMINMAX
 #include "RepositoryHttpServer.h"
 #include <ctime>
 #include <iomanip>
@@ -16,6 +16,9 @@
 #include "../FileSystem_Windows/FileSystemSearchHelper.h"
 #include "RepositoryMetadata.h"
 #include "RepositoryDependencyAnalyser.h"
+#include "../ZipLib/ZipFile.h"
+#include "../ZipLib/streams/memstream.h"
+#include "../ZipLib/methods/Bzip2Method.h"
 
 
 using namespace std;
@@ -111,6 +114,76 @@ HttpResponse RepositoryHttpServer::ListRepository(HttpRequest request)
 	return res;
 }
 
+
+HttpResponse RepositoryHttpServer::CloseModule(HttpRequest request)
+{
+	auto moduleName = request.FormData["ModuleName"];
+	auto metadata = RepositoryMetadataHelper::GetMetadata(RepositoryMetadataHelper::repository_path + moduleName + "/");
+	metadata.Closed = true;
+	RepositoryMetadataHelper::SaveMetadata(RepositoryMetadataHelper::repository_path + moduleName + "/", metadata);
+
+	this->GenerateDependencyRelation();
+
+	// Serialize the result and return the response object
+	string result = "Success";
+	auto res = HttpResponse();
+	res.contentString = result;
+	res.StatusCode = 200;
+	res.StatusText = "OK";
+	res.Protocol = "HTTP_681";
+	res.ContentType = "text/plain";
+	return res;
+}
+
+HttpResponse RepositoryHttpServer::DownloadModule(HttpRequest request)
+{
+	auto moduleName = request.FormData["ModuleName"];
+	auto withDependency = request.FormData["Dependency"] == "True";
+	vector<string> fileList;
+	auto metadata = RepositoryMetadataHelper::GetMetadata(RepositoryMetadataHelper::repository_path + moduleName + "/");
+	for (auto f : metadata.FileList) { fileList.push_back(RepositoryMetadataHelper::repository_path + moduleName + "/" + f); }
+	if (withDependency) {
+		for (auto dep : metadata.Dependencies) {
+			auto depPath = RepositoryMetadataHelper::repository_path + dep + "/";
+			auto depMetadata = RepositoryMetadataHelper::GetMetadata(depPath);
+			std::for_each(depMetadata.FileList.begin(), depMetadata.FileList.end(), [&](string& f){
+				fileList.push_back(depPath + "/" + f);
+			});
+			//for (auto f : depMetadata.FileList) { fileList.push_back(depPath + "/" + f); }
+		}
+	}
+	// In future, use temp data folder.
+	string filepath = (RepositoryMetadataHelper::repository_path + "/archive.zip");
+	const char* zipFilename = &filepath[0];
+
+	if (FileSystem::File::exists(zipFilename)) FileSystem::File::remove(zipFilename);
+
+	std::for_each(fileList.begin(), fileList.end(), [&](string& f) {
+		ZipFile::AddFile(zipFilename, f);
+	});
+	//for (auto f : fileList) ZipFile::AddFile(zipFilename, f);
+
+	FileSystem::File file(zipFilename);
+	file.open(FileSystem::File::in, FileSystem::File::binary);
+	char buffer[1024];
+	string result;
+	while (true) {
+		auto size = file.getBuffer( 1024, buffer);
+		for (auto b : buffer) result += b;
+		if (size < 1024) break;
+	}
+	file.close();
+	auto res = HttpResponse();
+	res.contentString = result;
+
+	res.StatusCode = 200;
+	res.StatusText = "OK";
+	res.Protocol = "HTTP_681";
+	res.ContentType = "file";
+	return res;
+}
+
+
 std::string RepositoryHttpServer::GetVersionFromPath(std::string path)
 {
 	string moduleName = FileSystem::Path::getName(path);
@@ -157,11 +230,8 @@ string RepositoryHttpServer::CurrentDatetimeString()
 }
 
 
-//----< test stub starts here >----------------------------------------------
 int main()
 {
-	// Test Repository Metadata:
-	
 	RepositoryMetadata metadata;
 	metadata.Name = "TestModule";
 	metadata.Version = "1.0.0";
@@ -169,9 +239,7 @@ int main()
 	metadata.Dependencies = vector<string>{ "Module1", "Module2" };
 	metadata.FileList = vector<string>{ "File1", "File2", "File3" };
 	auto jsonString = RepositoryMetadataHelper::Serialize(metadata);
-
 	auto metadata2 = RepositoryMetadataHelper::Deserialize(jsonString);
-	
 	try
 	{
 		SocketSystem ss;
@@ -185,20 +253,27 @@ int main()
 			RepositoryHttpServer handlerClass;
 			return handlerClass.ListRepository(request);
 		};
+		std::function<HttpResponse(HttpRequest)> closeModuleHandler = [](HttpRequest request) {
+			RepositoryHttpServer handlerClass;
+			return handlerClass.CloseModule(request);
+		};
+		std::function<HttpResponse(HttpRequest)> downloadHandler = [](HttpRequest request) {
+			RepositoryHttpServer handlerClass;
+			return handlerClass.DownloadModule(request);
+		};
 
 		cp.addRoute("/repository/checkin", checkInHandler);
 		cp.addRoute("/repository/list", repoListHandler);
-
+		cp.addRoute("/repository/close_module", closeModuleHandler);
+		cp.addRoute("/repository/download", downloadHandler);
 		sl.start(cp);
 
 		std::cout.flush();
 		std::cin.get();
-
-		
 	}
 	catch (std::exception& ex)
 	{
-
+		cout << ex.what() << endl;
 	}
 }
 

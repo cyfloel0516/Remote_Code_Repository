@@ -14,7 +14,6 @@ void HttpRequestHandler::operator()(Socket& socket_) {
 	this->request = HttpRequest();
 	// Process header
 	auto line = socket_.recvString('\n');
-	cout << line << endl;
 	this->handleHeader(line);
 	while (socket_.bytesWaiting() > 0) {
 		line = socket_.recvString('\n');
@@ -31,14 +30,20 @@ void HttpRequestHandler::operator()(Socket& socket_) {
 	}
 	// Look up for the route table and let the handler to handle specified request
 	auto route = this->routeTable.find(this->request.Resource);
-	cout << "accept " + request.Resource << endl;
+	cout << "Accept request: "  << HttpUtils::serialize(request, false) << endl << endl;
 	HttpResponse response;
 	if (route != this->routeTable.end()) {
 		// Route existed
 		response = route->second(this->request);
 	}
 	auto s = HttpUtils::serialize(response);
-	socket_.sendString(s);
+	vector<char> buffer;
+	buffer.reserve(s.size());
+	auto count = 0;
+	for (auto c : s) buffer.push_back(c);
+	
+	socket_.send(buffer.size(), buffer.data());
+	//socket_.sendString(s);
 }
 
 void HttpRequestHandler::addRoute(std::string url, std::function<HttpResponse(HttpRequest)> handler){
@@ -137,4 +142,21 @@ void HttpRequestHandler::handleContentType(std::string line) {
 	}
 }
 
+#ifdef TEST_HTTPSERVER
+void main() {
+	try
+	{
+		SocketSystem ss;
+		SocketListener sl(9080, Socket::IP4);
+		HttpRequestHandler cp;
+		sl.start(cp);
 
+		std::cout.flush();
+		std::cin.get();
+	}
+	catch (std::exception& ex)
+	{
+
+	}
+}
+#endif

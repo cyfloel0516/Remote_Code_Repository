@@ -10,6 +10,8 @@
 #include "../rapidjson/writer.h"
 #include "../rapidjson/stringbuffer.h"
 #include <algorithm>
+#include <iostream>
+using namespace std;
 using namespace rapidjson;
 
 const string RepositoryMetadataHelper::repository_path = FileSystem::Path::getFullFileSpec("../Code_Repository/");
@@ -153,3 +155,13 @@ bool RepositoryMetadata::VersionCompared(string version1, string version2)
 	else
 		return false;
 }
+
+#ifdef TEST_REPOSITORYMETADATA
+void main() {
+	RepositoryMetadata metadata1("Module1", "V001", false);
+	RepositoryMetadata metadata2("Module2", "V002", false);
+	cout << metadata1.Name << endl;
+	cout << RepositoryMetadata::VersionCompared(metadata1.Name, metadata2.Name);
+	cout << RepositoryMetadataHelper::Serialize(metadata1) << endl;
+}
+#endif

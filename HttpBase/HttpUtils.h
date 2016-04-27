@@ -20,7 +20,7 @@ public:
 	static std::string getValue(std::string line);
 
 	// Serialize the request object to char array for transfer via HTTP connect
-	static std::string serialize(HttpRequest request);
+	static std::string serialize(HttpRequest request, bool withfile = true);
 
 	// Serialize the response object to char array for transfer via HTTP connect
 	static std::string serialize(HttpResponse request);
