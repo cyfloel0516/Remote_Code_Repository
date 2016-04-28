@@ -7,7 +7,6 @@
         mc:Ignorable="d"
         Title="Repository Client" Height="500" Width="800">
     <Grid>
-        <Label x:Name="label" Content="Label" HorizontalAlignment="Left" Margin="10,435,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.854,14.707"/>
         <Button x:Name="upload_btn"  HorizontalAlignment="Left" Margin="10,10,0,0" 
                 VerticalAlignment="Top" Width="120" Height="26" Click="upload_btn_Click" Background="White" Cursor="Hand">
             <StackPanel Orientation="Horizontal" Width="113">

@@ -41,7 +41,7 @@ HttpResponse HttpClient::sendRequest(string resource, map<string, string> formDa
 	this->connector.sendString(s);
 	this->connector.shutDownSend();
 	
-	char buffer[1024];
+	//char buffer[1024];
 	auto resString = this->connector.recvString();
 	this->connector.shutDown();
 	// Deserialize the response string and return

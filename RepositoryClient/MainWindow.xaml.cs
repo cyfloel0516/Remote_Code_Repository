@@ -44,7 +44,7 @@ namespace RepositoryClient
 
             if (dialogResult == System.Windows.Forms.DialogResult.Cancel || String.IsNullOrEmpty(dialog.SelectedPath)) return;
 
-            label.Content = dialog.SelectedPath;
+            //label.Content = dialog.SelectedPath;
             List<String> files = Directory.GetFiles(dialog.SelectedPath, "*.cpp").ToList();
             files.AddRange(Directory.GetFiles(dialog.SelectedPath, "*.h"));
             dynamic request = new
@@ -74,7 +74,6 @@ namespace RepositoryClient
                 Files = new string[] { }
 
             };
-
             var rS = JsonConvert.SerializeObject(request);
             //sendRequest(rS, result, 100000);
             var result = new StringBuilder(100000);

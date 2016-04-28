@@ -42,7 +42,7 @@ public:
 	std::string GetVersionFromPath(std::string path);
 
 	// Regenerate the dependency relation
-	static void GenerateDependencyRelation();
+	static void GenerateDependencyRelation(string moduleName);
 		
 	// A helper function to get current datetime string, the format is YYYYMMDD_HHMMSS
 	static string CurrentDatetimeString();

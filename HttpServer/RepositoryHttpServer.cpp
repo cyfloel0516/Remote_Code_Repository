@@ -50,6 +50,7 @@ RepositoryMetadata RepositoryHttpServer::GetCurrentOpenedModule(string module)
 
 HttpResponse RepositoryHttpServer::FilesCheckIn(HttpRequest request)
 {
+	cout << "Module check-in" << endl;
 	RepositoryHttpServer::CheckRepositoryExist();
 	vector<string> fileList;
 	bool closed = request.FormData["Closed"] == "True";
@@ -78,9 +79,10 @@ HttpResponse RepositoryHttpServer::FilesCheckIn(HttpRequest request)
 	RepositoryMetadataHelper::SaveMetadata(folderPath, metadata);
 	
 	// Regenerate dependency relation
-	if (metadata.Closed) {
-		RepositoryHttpServer::GenerateDependencyRelation();
-	}
+	RepositoryHttpServer::GenerateDependencyRelation(metadata.getFullName());
+	//if (metadata.Closed) {
+	//	RepositoryHttpServer::GenerateDependencyRelation();
+	//}
 	auto res = HttpResponse();
 	res.contentString = "success";
 	res.StatusCode = 200;
@@ -122,7 +124,7 @@ HttpResponse RepositoryHttpServer::CloseModule(HttpRequest request)
 	metadata.Closed = true;
 	RepositoryMetadataHelper::SaveMetadata(RepositoryMetadataHelper::repository_path + moduleName + "/", metadata);
 
-	this->GenerateDependencyRelation();
+	this->GenerateDependencyRelation(moduleName);
 
 	// Serialize the result and return the response object
 	string result = "Success";
@@ -191,15 +193,15 @@ std::string RepositoryHttpServer::GetVersionFromPath(std::string path)
 	return moduleName.substr(index + 1);
 }
 
-void RepositoryHttpServer::GenerateDependencyRelation(){
+void RepositoryHttpServer::GenerateDependencyRelation(string moduleName){
 	RepositoryDependencyAnalyser analyser;
-	analyser.InitTypeTable();
+	analyser.InitTypeTable(moduleName);
 	// go through each folder and see if the repository is closed, if yes, then take all files into the list for analysis
-	auto directories = FileSystem::Directory::getDirectories(RepositoryMetadataHelper::repository_path, "*");
-	std::for_each(directories.begin(), directories.end(), [](string &s) { s = RepositoryMetadataHelper::repository_path + s;});
+	vector<string> directories = { RepositoryMetadataHelper::repository_path + moduleName + "/" };
+	//std::for_each(directories.begin(), directories.end(), [](string &s) { s = RepositoryMetadataHelper::repository_path + s;});
 	for (auto dir : directories) {
 		auto metadata = RepositoryMetadataHelper::GetMetadata(dir);
-		if (!metadata.Name.empty() && metadata.Closed) {
+		if (!metadata.Name.empty() ) {
 			// Do dependency analysis
 			auto dependencies = analyser.GetDependency(dir);
 			for (auto dep : dependencies) {

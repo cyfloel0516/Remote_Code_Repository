@@ -16,7 +16,7 @@ class RepositoryDependencyAnalyser {
 public:
 	// Initialize the type table
 	// This function go thought every closed package and get the type table.
-	void InitTypeTable();
+	void InitTypeTable(string moduleName);
 	
 	// Get dependency of a specified module
 	vector<string> GetDependency(string modulePath);

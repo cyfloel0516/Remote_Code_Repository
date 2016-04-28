@@ -38,7 +38,8 @@ std::string HttpUtils::getValue(std::string line) {
 
 std::string HttpUtils::serialize(HttpRequest request, bool withfile) {
 	std::string result;
-	int requestSize = 1000, i = 0, j = 0;
+	int requestSize = 1000;
+	size_t i = 0, j = 0;
 	bool isFile = false;
 	if (request.files.size() != 0) {
 		for (auto it = request.files.begin(); it != request.files.end(); it++) {
@@ -108,7 +109,7 @@ HttpRequestLine HttpUtils::getLineData(std::string line) {
 		auto keyValues = Utilities::StringHelper::split(line, ';');
 		lineData.Name = HttpUtils::getCommand(keyValues[0]);
 		lineData.Value = HttpUtils::getValue(keyValues[0]);
-		for (auto i = 1; i < keyValues.size(); i++) {
+		for (size_t i = 1; i < keyValues.size(); i++) {
 			auto keyValue = keyValues[i];
 			auto pair = Utilities::StringHelper::split(keyValue, '=');
 			lineData.Proterties.insert({ Utilities::StringHelper::trim(pair[0]), Utilities::StringHelper::trim(pair[1]) });
@@ -162,7 +163,7 @@ std::vector<char> HttpUtils::getFileContent(std::string filename) {
 }
 
 void HttpUtils::putStringToVector(std::vector<char>& destination, std::string value) {
-	for (int i = 0; i < value.size(); i++) {
+	for (size_t i = 0; i < value.size(); i++) {
 		destination.push_back(value[i]);
 	}
 }

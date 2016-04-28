@@ -70,7 +70,7 @@ RepositoryMetadata RepositoryMetadataHelper::Deserialize(string metadataString)
 }
 
 void RepositoryMetadataHelper::SaveMetadata(string modulePath, RepositoryMetadata metadata) {
-	auto filePath = modulePath + "\metadata.json";
+	auto filePath = modulePath + "/metadata.json";
 	if (FileSystem::File::exists(filePath))
 		FileSystem::File::remove(filePath);
 	FileSystem::File metadataFile(filePath);
@@ -101,7 +101,7 @@ string RepositoryMetadataHelper::Serialize(vector<RepositoryMetadata> metadatas)
 	result.SetArray();
 	rapidjson::Document::AllocatorType& allocator = result.GetAllocator();
 
-	for (auto i = 0; i < metadatas.size(); i++) {
+	for (size_t i = 0; i < metadatas.size(); i++) {
 		auto metadata = metadatas[i];
 		rapidjson::Value d(rapidjson::kObjectType); 
 		d.SetObject();

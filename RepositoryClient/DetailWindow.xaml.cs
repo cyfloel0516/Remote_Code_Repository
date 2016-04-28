@@ -73,6 +73,10 @@ namespace RepositoryClient
         }
 
         private void close_btn_Click(object sender, RoutedEventArgs e){
+            if (metadata.Closed){
+                MessageBox.Show(this, "This module has been closed before.", "Message");
+                return;
+            }
             dynamic request = new{
                 Resource = "/repository/close_module",
                 FormData = new Object[] { new { key = "ModuleName", value = this.metadata.Fullname } },

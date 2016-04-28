@@ -243,7 +243,7 @@ std::string Socket::recvString(std::string terminator)
 		iResult = ::recv(socket_, buffer, buflen, 0);
 		if (iResult == 0 || iResult == INVALID_SOCKET)
 			break;
-		if (str.size() >= terminatorSize && str.substr(str.size() - terminatorSize) == terminator)
+		if (str.size() >= (size_t)terminatorSize && str.substr(str.size() - terminatorSize) == terminator)
 			break;
 		str += buffer[0];
 	}
