@@ -47,6 +47,10 @@ namespace RepositoryClient
             //label.Content = dialog.SelectedPath;
             List<String> files = Directory.GetFiles(dialog.SelectedPath, "*.cpp").ToList();
             files.AddRange(Directory.GetFiles(dialog.SelectedPath, "*.h"));
+            if(files.Count == 0){
+                MessageBox.Show(this, "This folder does not contain any c++ files", "Message");
+                return;
+            }
             dynamic request = new
             {
                 Resource = "/repository/checkin",

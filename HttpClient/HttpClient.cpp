@@ -103,9 +103,7 @@ HttpResponse HttpClient::deserializeResponse(string responseString)
 	// Content
 	if (response.ContentType != "file") {
 		string content;
-		while (std::getline(ss, line)) {
-			content += line + "\n";
-		}
+		while (std::getline(ss, line)) content += line + "\n";
 		cout << content << endl;
 		response.contentString = content;
 	}
@@ -114,12 +112,10 @@ HttpResponse HttpClient::deserializeResponse(string responseString)
 		string s;
 		FileSystem::File file("D:/test1.zip");
 		file.open(FileSystem::File::out, FileSystem::File::binary);
-		while (true) {
+		while (ss.rdbuf()->in_avail() == 0) {
 			ss.read(buffer, 1024);
 			file.putBuffer(1024, buffer);
-			if (ss.rdbuf()->in_avail() == 0) {
-				break;
-			}
+			//if (ss.rdbuf()->in_avail() == 0) break;
 		}
 		file.close();
 	}

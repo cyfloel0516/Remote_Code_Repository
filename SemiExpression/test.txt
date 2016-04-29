@@ -1,0 +1,31 @@
+bool SemiExpression::ifToStopCollect(const Token& token) {
+	bool stop = false;
+	auto tokenType = token.tokenType;
+	auto tokenValue = token.tokenValue;
+	if (tokenType == TOKEN_TYPES::PUNCTUATOR && tokenValue == "{")
+		stop = true;
+	else if (tokenType == TOKEN_TYPES::PUNCTUATOR && tokenValue == ";")
+		stop = true;
+	else if (tokenType == TOKEN_TYPES::PUNCTUATOR && tokenValue == "}")
+		stop = true;
+	else if (tokenType == TOKEN_TYPES::NEWLINE && _tokens.size() > 1 ) {
+		bool first = true;
+		for (int i = 0; i < _tokens.size(); i++) {
+			if (_tokens[i].tokenType == TOKEN_TYPES::NEWLINE) 
+				continue;
+			else if (_tokens[i].tokenType != TOKEN_TYPES::NEWLINE && _tokens[i].tokenValue == "#" && _tokens[i].tokenType == TOKEN_TYPES::PUNCTUATOR) {
+				stop = true;
+				break;
+			}
+			else {
+				break;
+			}
+		}
+	}
+	else if (tokenType == TOKEN_TYPES::PUNCTUATOR && tokenValue == ":"
+		&& _tokens.back().tokenType == TOKEN_TYPES::ALPHANUM
+		&& (_tokens.back().tokenValue == "private" || _tokens.back().tokenValue == "protected" || _tokens.back().tokenValue == "public")) {
+		stop = true;
+	}
+	return stop;
+}

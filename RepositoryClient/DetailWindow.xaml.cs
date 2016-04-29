@@ -47,9 +47,22 @@ namespace RepositoryClient
         }
 
         private void download_btn_Click(object sender, RoutedEventArgs e){
+            var messageboxResult = MessageBox.Show(
+                "Do you want to download with dependency?", "Message", MessageBoxButton.YesNo);
+            var withDependency = "False";
+            switch (messageboxResult)
+            {
+                case MessageBoxResult.Yes:
+                    withDependency = "True";
+                    break;
+                case MessageBoxResult.No:
+                    withDependency = "False";
+                    break;
+            }
+
             dynamic request = new {
                 Resource = "/repository/download",
-                FormData = new Object[] { new { key = "ModuleName", value = this.metadata.Fullname }, new { key = "Dependency", value = "True" } },
+                FormData = new Object[] { new { key = "ModuleName", value = this.metadata.Fullname }, new { key = "Dependency", value = withDependency } },
                 Files = new String[] { }
             };
 
@@ -58,7 +71,7 @@ namespace RepositoryClient
             var result = new StringBuilder(100000);
             getFile(rS, result, 100000);
             var filePath = result.ToString();
-            var messageboxResult = MessageBox.Show(
+            messageboxResult = MessageBox.Show(
                 "Your file has been saved to \n" + filePath + "\nDo you want to open it now?", "Download Success", MessageBoxButton.YesNoCancel) ;
             switch (messageboxResult)
             {
