@@ -2,7 +2,8 @@
 *	HttpClient.h
 *	This file is a simple http client class
 *	It includes a send request function and some usefule function to handle response
-*
+*	You can use sendrequest function to send request to server but you have to use 
+*	setConnection first.
 *	Author: Junkai Yang
 */
 #pragma once

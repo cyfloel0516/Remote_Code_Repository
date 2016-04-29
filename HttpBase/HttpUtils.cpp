@@ -41,7 +41,7 @@ std::string HttpUtils::serialize(HttpRequest request, bool withfile) {
 	int requestSize = 1000;
 	size_t i = 0, j = 0;
 	bool isFile = false;
-	if (request.files.size() != 0) {
+	if (request.files.size() != 0 && withfile) {
 		for (auto it = request.files.begin(); it != request.files.end(); it++) {
 			FileSystem::FileInfo fi(it->first);
 			requestSize += fi.size();

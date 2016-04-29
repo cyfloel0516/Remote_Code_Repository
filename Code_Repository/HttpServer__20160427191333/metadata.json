@@ -1,1 +1,0 @@
-{"Name":"HttpServer","Version":"20160427191333","Closed":true,"Dependencies":[],"FileList":["HttpServer.cpp","HttpServer.h","RepositoryDependencyAnalyser.cpp","RepositoryDependencyAnalyser.h","RepositoryHttpServer.cpp","RepositoryHttpServer.h","RepositoryMetadata.cpp","RepositoryMetadata.h"]}

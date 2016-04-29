@@ -1,7 +1,7 @@
 /*
 *	HttpClient.cpp
 *	Implementation of HttpClient.h
-*
+*	
 *	Author: Junkai Yang
 */
 #include "HttpClient.h"
@@ -100,7 +100,7 @@ HttpResponse HttpClient::deserializeResponse(string responseString)
 		else if (command == "Content-Length")
 			response.ContentLength = stoi(value);
 	}
-	// Content
+	// Deserialize the content
 	if (response.ContentType != "file") {
 		string content;
 		while (std::getline(ss, line)) content += line + "\n";
