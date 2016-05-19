@@ -12,8 +12,10 @@ It is a application in C/S architecture which allows user to manage the C++ pack
 
 # Server
 1. Save package from user in server
-2. Do automatic dependency analysis when a new package is check-in
+2. Use multiple threads to do automatic dependency analysis when a new package check in
 3. Do version control by the package status(opened or closed) and upload date
 
-# Some other detail
+# Other detail
 Please check readme.pdf file
+
+Related Project(Code Analyze): <https://github.com/cyfloel0516/Dependency-Analyser>
